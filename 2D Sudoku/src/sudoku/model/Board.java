@@ -94,7 +94,8 @@ public class Board {
 	 * @param row index of the row where the position is from.
 	 * @return Integer that defines the square where the position is from.
 	 */
-	@SuppressWarnings("unused")
+	
+	//No sirve
 	private int getSquarePosition(int col, int row) {
 		int square = 0;
 		int sqrSize = size / 2;
