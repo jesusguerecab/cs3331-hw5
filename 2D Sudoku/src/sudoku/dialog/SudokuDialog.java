@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import sudoku.model.Board;
 
 /**
+ * JesusWazHere
  * A dialog template for playing simple Sudoku games.
  * You need to write code for three callback methods:
  * newClicked(int), numberClicked(int) and boardClicked(int,int).
