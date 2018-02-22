@@ -97,47 +97,8 @@ public class Board {
 	@SuppressWarnings("unused")
 	private int getSquarePosition(int col, int row) {
 		int square = 0;
-		if(size == 4) {
-			if(col <= 2) {
-				if(row <= 2) {
-					square = 1;
-				} else {
-					square = 3;
-				}
-			} else {
-				if(row <= 2) {
-					square = 2;
-				} else {
-					square = 4;
-				}
-			}
-		} else if(size == 9) {
-			if(col <= 3) {
-				if(row <= 3) {
-					square = 1;
-				}else if(row > 3 && row <= 6) {
-					square = 4;
-				}else if(row > 6) {
-					square = 7;
-				}
-			}else if(col > 3 && col <= 6) {
-				if(row <= 3) {
-					square = 2;
-				}else if(row > 3 && row <= 6) {
-					square = 5;
-				}else if(row > 6) {
-					square = 8;
-				}
-			}else if(col > 6) {
-				if(row <= 3) {
-					square = 3;
-				}else if(row > 3 && row <= 6) {
-					square = 6;
-				}else if(row > 6) {
-					square = 9;
-				}
-			}
-		}
+		int sqrSize = size / 2;
+		square = ((col-1) % sqrSize) + ((row-1) / sqrSize)*sqrSize;
 		return square;
 	}
 	
