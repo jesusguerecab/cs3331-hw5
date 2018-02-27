@@ -97,9 +97,10 @@ public class Board {
 	
 	//No sirve
 	private int getSquarePosition(int col, int row) {
+		//col = x //row = y
 		int square = 0;
 		int sqrSize = size / 2;
-		square = ((col-1) % sqrSize) + ((row-1) % sqrSize)*sqrSize + 1;
+		square = ((col) % sqrSize) + ((row) % sqrSize)*sqrSize + 1;
 		return square;
 	}
 	
