@@ -88,19 +88,16 @@ public class Board {
 	}
 	
 	/*
-	 * This method its going to take a position and return the square which that position is from.
+	 * This method will calculate the sub grid of a position.
 	 * 
-	 * @param col index of the column where the position is from.
-	 * @param row index of the row where the position is from.
-	 * @return Integer that defines the square where the position is from.
+	 * @param col used to store the column from where the value is.
+	 * @param row used to store the row from where the value is.
+	 * @return would return the sub grid where the number is.
 	 */
-	
-	//No sirve
 	private int getSquarePosition(int col, int row) {
-		//col = x //row = y
 		int square = 0;
-		int sqrSize = size / 2;
-		square = ((col) % sqrSize) + ((row) % sqrSize)*sqrSize + 1;
+		int sqrSize = (int) Math.sqrt(size);
+		square = (int) (((col - 1) / sqrSize) + ((row - 1 ) / sqrSize) * sqrSize + 1);
 		return square;
 	}
 	
