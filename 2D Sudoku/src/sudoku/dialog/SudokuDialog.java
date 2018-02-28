@@ -13,6 +13,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import sudoku.model.Board;
@@ -89,6 +90,9 @@ public class SudokuDialog extends JFrame {
 	 * @param size Requested puzzle size, either 4 or 9.
 	 */
 	private void newClicked(int size) {
+		int confirm = JOptionPane.showConfirmDialog(null, "Play new game?", "New Game", JOptionPane.YES_NO_OPTION);
+		if(confirm == JOptionPane.NO_OPTION)
+			return;
 		board = new Board(size);
 		boardPanel.setBoard(board);
 		showMessage("size: " + board.size);
