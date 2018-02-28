@@ -94,6 +94,7 @@ public class SudokuDialog extends JFrame {
 		if(confirm == JOptionPane.NO_OPTION)
 			return;
 		board = new Board(size);
+		board.createBoard();
 		boardPanel.setBoard(board);
 		showMessage("size: " + board.size);
 		boardPanel.repaint();
