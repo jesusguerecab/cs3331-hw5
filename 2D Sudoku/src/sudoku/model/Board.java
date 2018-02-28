@@ -6,16 +6,18 @@ public class Board {
 	/** Size of this board (number of columns/rows). */
 	public final int size;
 	private int[][] sudoku;
+	private int value;
+	private int x, y;
 
 	/** Create a new board of the given size. */
 	public Board(int size) {
 		this.size = size;
 		createBoard();
 	}
-	
+
 	/*
 	 * Default constructor which sets the size of the board to 4 by default and creates the board.
-	 */
+	 */ 
 	public Board() {
 		this(4);
 		createBoard();
@@ -32,13 +34,13 @@ public class Board {
 	public int[][] getArray() {
 		return sudoku;
 	}
-	
+
 	/*
 	 * This method creates an empty array with the given size of the board. 
 	 * It will go trough every index and set the values with 0.
 	 */
-	
-	private void createBoard() {
+
+	public void createBoard() {
 		sudoku = new int[size][size];
 		for(int i = 0; i < size; i++) {
 			for(int j = 0; j < size; j++) {
@@ -46,7 +48,7 @@ public class Board {
 			}
 		}
 	}
-	
+
 	/*
 	 * This method checks if the sudoku board has been solved. 
 	 * It will go trough every value and detect if there are still values with 0.
@@ -73,20 +75,20 @@ public class Board {
 	 * @param value used to store the value that the user is trying to insert.
 	 * @return would return a boolean that would specify if there is a value in the row or column.
 	 */
-	public boolean repeatsColumnRow(int col, int row, int value) {
+	public boolean repeatsColumnRow() {
 		for(int i = 0; i < sudoku.length; i++) {
-			if(sudoku[row-1][i] == value) {
+			if(sudoku[x][i] == value) {
 				return true;
 			}
 		}
 		for(int i = 0; i < sudoku.length; i++) {
-			if(sudoku[i][col-1] == value) {
+			if(sudoku[i][y] == value) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	/*
 	 * This method will calculate the sub grid of a position.
 	 * 
@@ -97,10 +99,10 @@ public class Board {
 	private int getSquarePosition(int col, int row) {
 		int square = 0;
 		int sqrSize = (int) Math.sqrt(size);
-		square = (int) (((col - 1) / sqrSize) + ((row - 1 ) / sqrSize) * sqrSize + 1);
+		square = (int) (((y) / sqrSize) + ((x) / sqrSize) * sqrSize + 1);
 		return square;
 	}
-	
+
 	/*
 	 * This method would obtain a position and a value and define if there is an identical value already in the same square.
 	 * 
@@ -109,12 +111,12 @@ public class Board {
 	 * @param value used to store the value that the user is trying to insert.
 	 * @return would return a boolean that would specify if there is already a value in the same square.
 	 */
-	public boolean repeatsOnSquare(int col, int row, int value) {
-		int square = getSquarePosition(col, row);
-		for(int i = 1; i <= sudoku.length; i++) {
-			for(int j = 1; j <= sudoku.length; j++) {
+	public boolean repeatsOnSquare() {
+		int square = getSquarePosition(y, x);
+		for(int i = 0; i <= sudoku.length; i++) {
+			for(int j = 0; j <= sudoku.length; j++) {
 				if(getSquarePosition(i, j) == square) {
-					if(sudoku[j-1][i-1] == value) {
+					if(sudoku[j][i] == value) {
 						System.out.println("repeats with " + i + ", " + j);
 						return true;
 					}
@@ -133,8 +135,8 @@ public class Board {
 	 * @param value used to store the value that the user is trying to insert.
 	 * @return would return a boolean that would specify if the position is empty.
 	 */
-	public boolean isEmpty(int col, int row, int v) {
-		if(sudoku[row-1][col-1] != 0) 
+	public boolean isEmpty() {
+		if(sudoku[x][y] != 0) 
 			return false;
 		return true;
 	}
@@ -146,8 +148,32 @@ public class Board {
 	 * @param row used to store the row for the new value.
 	 * @param value used to store the actual value of the new value.
 	 */
-	public void insert(int col, int row, int value) {
-		sudoku[row-1][col-1] = value;
+	public void insert() {
+		sudoku[x][y] = value;
+	}
+
+	public void setValue(int value) {
+		this.value = value;
+	}
+
+	public int getValue() {
+		return value;
+	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public void setY(int y) {
+		this.y = y;
+	}
+
+	public int getY() {
+		return value;
 	}
 
 }
