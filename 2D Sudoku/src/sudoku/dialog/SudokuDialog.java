@@ -19,7 +19,6 @@ import javax.swing.JPanel;
 import sudoku.model.Board;
 
 /**
- * JesusWazHere
  * A dialog template for playing simple Sudoku games.
  * You need to write code for three callback methods:
  * newClicked(int), numberClicked(int) and boardClicked(int,int).
@@ -67,9 +66,9 @@ public class SudokuDialog extends JFrame {
 	 * @param y 0-based column index of the clicked square.
 	 */
 	private void boardClicked(int x, int y) {
-		// WRITE YOUR CODE HERE ...
-		//
-		showMessage(String.format("Board clicked: x = %d, y = %d",  x, y));
+		board.setX(x);
+		board.setY(y);
+		showMessage(String.format("DEBUG: Board clicked: x = %d, y = %d",  x, y));
 	}
 
 	/**
@@ -77,9 +76,13 @@ public class SudokuDialog extends JFrame {
 	 * @param number Clicked number (1-9), or 0 for "X".
 	 */
 	private void numberClicked(int number) {
-		// WRITE YOUR CODE HERE ...
-		//
-		showMessage("Number clicked: " + number);
+		board.setValue(number);
+		if((board.repeatsColumnRow()) || (board.repeatsOnSquare())){
+			showMessage("Invalid position.");
+		}else {
+			board.insert();
+		}
+		showMessage("DEBUG: Number clicked: " + number);
 	}
 
 	/**
