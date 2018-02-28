@@ -21,18 +21,24 @@ import sudoku.model.Board;
 @SuppressWarnings("serial")
 public class BoardPanel extends JPanel {
     
+	public Graphics g;
+	
 	public interface ClickListener {
 		
 		/** Callback to notify clicking of a square. 
 		 * 
 		 * @param x 0-based column index of the clicked square
 		 * @param y 0-based row index of the clicked square
+		 * @return 
 		 */
 		void clicked(int x, int y);
 	}
 	
     /** Background color of the board. */
 	private static final Color boardColor = new Color(247, 223, 150);
+	
+	/** Color of selected square. */
+	private static final Color squareColor = new Color(224,134,194);
 
     /** Board to be displayed. */
     private Board board;
@@ -73,7 +79,35 @@ public class BoardPanel extends JPanel {
     	int yy = y / squareSize;
     	return xx * 100 + yy;
     }
-
+    
+    /** Column Index of square to be highlighted*/
+    private Integer x = -1;
+    
+    /** Row Index of square to be highlighted*/
+    private Integer y = -1;
+    
+    /** Given a screen coordinate, updates/initializes private values*/
+    public void selectRect(int x, int y) {
+    	if(this.x != x || this.y != y) {
+    		this.x = x;
+    		this.y = y;
+    	} else
+    		this.x = this.y = -1;
+    }
+    
+    /** Draws the lines that separate the squares on the board*/
+    private void drawGridLines(Graphics g) {
+        g.setColor(Color.GRAY);
+        for(int i = 0;i < board.size;i++) {
+            g.fillRect(i*squareSize, 0, 1, board.size * squareSize);
+            g.fillRect(0, i*squareSize, board.size * squareSize, 1);
+        }
+        for(int i = 0;i < Math.sqrt(board.size);i++) {
+	        g.setColor(Color.BLACK);
+	        g.fillRect(2*i*squareSize, 0, 1, board.size * squareSize);
+	        g.fillRect(0, 2*i*squareSize, board.size * squareSize, 1);
+        }
+    }
     /** Draw the associated board. */
     @Override
     public void paint(Graphics g) {
@@ -87,8 +121,13 @@ public class BoardPanel extends JPanel {
         final Color oldColor = g.getColor();
         g.setColor(boardColor);
         g.fillRect(0, 0, squareSize * board.size, squareSize * board.size);
-
+        if(x != null || y != null) {
+	        g.setColor(squareColor);
+	        g.fillRect(x * squareSize + 2, y * squareSize + 2, squareSize - 3, squareSize - 3);
+        }
+        drawGridLines(g);
         // WRITE YOUR CODE HERE ...
+        
         // i.e., draw grid and squares.
     }
 

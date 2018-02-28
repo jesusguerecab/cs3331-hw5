@@ -1,6 +1,7 @@
 package sudoku.dialog;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -13,6 +14,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import sudoku.model.Board;
@@ -51,7 +53,7 @@ public class SudokuDialog extends JFrame {
 	public SudokuDialog(Dimension dim) {
 		super("Sudoku");
 		setSize(dim);
-		board = new Board(9);
+		board = new Board(4);
 		boardPanel = new BoardPanel(board, this::boardClicked);
 		configureUI();
 		//setLocationRelativeTo(null);
@@ -68,7 +70,9 @@ public class SudokuDialog extends JFrame {
 	private void boardClicked(int x, int y) {
 		// WRITE YOUR CODE HERE ...
 		//
-		showMessage(String.format("Board clicked: x = %d, y = %d",  x, y));
+		boardPanel.selectRect(x, y);
+       showMessage(String.format("Board clicked: x = %d, y = %d",  x, y));
+       boardPanel.repaint();
 	}
 
 	/**
@@ -78,6 +82,7 @@ public class SudokuDialog extends JFrame {
 	private void numberClicked(int number) {
 		// WRITE YOUR CODE HERE ...
 		//
+		
 		showMessage("Number clicked: " + number);
 	}
 
@@ -91,7 +96,16 @@ public class SudokuDialog extends JFrame {
 	private void newClicked(int size) {
 		// WRITE YOUR CODE HERE ...
 		//
-		showMessage("New clicked: " + size);
+		String optionsButton[] = {"No","Yes"};
+		if(!board.isSolved()) {
+			int in = JOptionPane.showOptionDialog(null,"Play a new game?","New Game",JOptionPane.YES_NO_OPTION,JOptionPane.PLAIN_MESSAGE,null,optionsButton,optionsButton[1]);
+	        if(in==JOptionPane.YES_OPTION)
+		        return;
+		}
+		board = new Board(size);
+		boardPanel.setBoard(board);
+		showMessage("New clicked: " + size + " " + board.size);
+		boardPanel.repaint();
 	}
 
 	/**
