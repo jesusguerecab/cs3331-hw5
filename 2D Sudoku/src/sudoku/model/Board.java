@@ -15,6 +15,7 @@ public class Board {
 	public Board(int size) {
 		this.size = size;
 		createBoard();
+		x = y = -1;
 	}
 
 	/** Default constructor which sets the size of the board to 4 by default and creates the board. */ 
@@ -115,6 +116,7 @@ public class Board {
 	 * @return would return true if number wasn't allowed at position (x,y)
 	 */
 	public boolean insert(int number) {
+		if(x == -1 || y == -1) return false; 
 		if(number != 0)
 			if(repeatsOnSquare(number) || repeatsColumnRow(number))
 				return true;
@@ -137,6 +139,10 @@ public class Board {
 
 	public int getY() {
 		return y;
+	}
+
+	public void clearPos() {
+		x = y = -1;
 	}
 
 }

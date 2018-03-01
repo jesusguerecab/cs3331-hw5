@@ -86,11 +86,18 @@ public class BoardPanel extends JPanel {
     
     /** Given a screen coordinate, updates/initializes private values*/
     public void selectRect(int x, int y) {
-    	if(this.x == x && this.y == y) 
+    	if(this.x == x && this.y == y) {
     		this.x = this.y = -1;
+    		board.setX(-1);
+    		board.setY(-1);
+    		board.clearPos();
+    	}
     	else {
     		this.x = x;
 			this.y = y;
+
+			board.setX(x);
+			board.setY(y);
     	}
     }
     

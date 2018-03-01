@@ -70,8 +70,6 @@ public class SudokuDialog extends JFrame {
 	 */
 	private void boardClicked(int x, int y) {
 		boardPanel.selectRect(x, y);
-		board.setX(x);
-		board.setY(y);
 		//showMessage(String.format("DEBUG: Board clicked: x = %d, y = %d",  x, y));
 		boardPanel.repaint();
 	}
@@ -100,14 +98,15 @@ public class SudokuDialog extends JFrame {
 	 * @param size Requested puzzle size, either 4 or 9.
 	 */
 	private void newClicked(int size) {
-		int confirm = JOptionPane.showConfirmDialog(null, "Play new game?", "New Game", JOptionPane.YES_NO_OPTION);
-		if(confirm == JOptionPane.YES_OPTION) {
-			board = new Board(size);
-			board.createBoard();
-			boardPanel.setBoard(board);
-			//showMessage("New clicked: " + size);
-			boardPanel.repaint();
+		if(!board.isSolved()) {
+			int confirm = JOptionPane.showConfirmDialog(null, "Play new game?", "New Game", JOptionPane.YES_NO_OPTION);
+			if(confirm == JOptionPane.NO_OPTION) return;
 		}
+		board = new Board(size);
+		board.createBoard();
+		boardPanel.setBoard(board);
+		//showMessage("New clicked: " + size);
+		boardPanel.repaint();
 	}
 
 	/**
