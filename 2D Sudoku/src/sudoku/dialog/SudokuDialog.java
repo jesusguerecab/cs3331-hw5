@@ -78,13 +78,17 @@ public class SudokuDialog extends JFrame {
 	 * @param number Clicked number (1-9), or 0 for "X".
 	 */
 	private void numberClicked(int number) {
-		if(board.insert(number)) {
-			showMessage("Conflicting Number.");
+		if(number <= board.size) {
+			if(board.insert(number)) {
+				showMessage("Conflicting Number.");
+			} else {
+				boardPanel.updateValue(boardPanel.getGraphics(), board.getX(), board.getY(), number);
+			}
+			if(board.isSolved()) {
+				showMessage("Solved!");
+			}
 		} else {
-			boardPanel.updateValue(boardPanel.getGraphics(), board.getX(), board.getY(), number);
-		}
-		if(board.isSolved()) {
-			showMessage("Solved!");
+			showMessage("Invalid number!");
 		}
 	}
 
