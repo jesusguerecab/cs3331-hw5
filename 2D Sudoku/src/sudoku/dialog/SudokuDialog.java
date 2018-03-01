@@ -79,13 +79,9 @@ public class SudokuDialog extends JFrame {
 	 * @param number Clicked number (1-9), or 0 for "X".
 	 */
 	private void numberClicked(int number) {
-		board.setValue(number);
-		if((board.repeatsColumnRow()) || (board.repeatsOnSquare())){
-			showMessage("Invalid position.");
-		}else {
-			board.insert();
-		}
-		showMessage("DEBUG: Number clicked: " + number);
+		if(board.insert(number)) 
+			showMessage("Conflicting Number.");
+		//showMessage("DEBUG: Number clicked: " + number);
 	}
 
 	/**
@@ -97,13 +93,13 @@ public class SudokuDialog extends JFrame {
 	 */
 	private void newClicked(int size) {
 		int confirm = JOptionPane.showConfirmDialog(null, "Play new game?", "New Game", JOptionPane.YES_NO_OPTION);
-		if(confirm == JOptionPane.NO_OPTION)
-			return;
-		board = new Board(size);
-		board.createBoard();
-		boardPanel.setBoard(board);
-		showMessage("New clicked: " + size);
-		boardPanel.repaint();
+		if(confirm == JOptionPane.YES_OPTION) {
+			board = new Board(size);
+			board.createBoard();
+			boardPanel.setBoard(board);
+			showMessage("New clicked: " + size);
+			boardPanel.repaint();
+		}
 	}
 
 	/**
