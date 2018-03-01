@@ -33,7 +33,7 @@ public class Board {
 		return sudoku;
 	}
 
-	/** This method creates an empty array with the given size of the board. */
+	/** Creates an empty array with the given size of the board. */
 	public void createBoard() {
 		sudoku = new int[size][size];
 		for(int i = 0; i < size; i++) {
@@ -43,7 +43,7 @@ public class Board {
 		}
 	}
 
-	/** This method checks if the sudoku board has been solved.
+	/** Checks if the sudoku board has been solved.
 	 * 
 	 * @return returns whether the board has been solved or not.
 	 */
@@ -76,7 +76,7 @@ public class Board {
 		return false;
 	}
 
-	/** This method will calculate the sub grid of a position.
+	/** Will calculate the sub grid of a position.
 	 * 
 	 * @param x used to store the column from where the value is.
 	 * @param y used to store the row from where the value is.
@@ -89,7 +89,7 @@ public class Board {
 		return square;
 	}
 
-	/** This method would obtain a position and a value and define if there is an identical number already in the same square.
+	/** Obtains a position and a value and determines if there is an identical number already in the same square.
 	 * 
 	 * @param number used to store the number that the user is trying to insert.
 	 * @return would return a boolean that would specify if there is already a value in the same square.
@@ -109,7 +109,7 @@ public class Board {
 		return false;
 	}
 
-	/** Would check if there's an error with inserting the value, if none would insert value.
+	/** Checks if there's an error with inserting the value, if none would insert value.
 	 * 
 	 * @param number used to store the actual value of the new number.
 	 * @return would return true if number wasn't allowed at position (x,y)

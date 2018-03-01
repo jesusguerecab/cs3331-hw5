@@ -181,7 +181,7 @@ public class SudokuDialog extends JFrame {
 	}
 	
 	/**
-	 * method that will play sounds and display a message.
+	 * Plays sounds and display a message.
 	 * 
 	 * @param sound Name of the sound file.
 	 * @param msg Message to be displayed.
@@ -196,7 +196,7 @@ public class SudokuDialog extends JFrame {
 							SudokuDialog.class.getResourceAsStream("/sound/" + sound));
 					clip.open(inputStream);
 					clip.start(); 
-					showMessage(msg);
+					showMessage(msg); 
 				} catch (Exception e) {
 					System.err.println(e.getMessage());
 				}

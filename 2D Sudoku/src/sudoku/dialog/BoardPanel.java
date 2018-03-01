@@ -94,7 +94,7 @@ public class BoardPanel extends JPanel {
     	}
     }
     
-	/** Update board with values*/
+	/** Updates board with values*/
 	public void updateValues(Graphics g) {
 		int[][] sudoku = board.getArray();
 		int centerX = (board.size==9)?12:30;
