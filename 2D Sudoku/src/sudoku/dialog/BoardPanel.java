@@ -135,5 +135,11 @@ public class BoardPanel extends JPanel {
 	        g.fillRect(x * squareSize + 2, y * squareSize + 2, squareSize - 3, squareSize - 3);
         }
         drawGridLines(g);
+        
+        int[][]value = board.getArray();
+        for(int i = 0;i < board.size;i++)
+            for(int j = 0;j < board.size;j++)
+            	if(value[i][j] != 0)
+            		updateValue(g,i,j,value[i][j]);
     }
 }
