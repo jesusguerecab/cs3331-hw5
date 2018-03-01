@@ -90,6 +90,18 @@ public class BoardPanel extends JPanel {
 		this.y = y;
     }
     
+	/** Update board with values*/
+	public void updateValue(Graphics g, int x, int y, int value) {
+		int[][] sudoku = board.getArray();
+		if(sudoku[x][y] == 0) {
+			g.drawString(" ", locateSquaree(x, y) + 30, locateSquaree(x, y) + 40);
+		} else {
+			g.drawString(String.valueOf(sudoku[x][y]), x * squareSize+30, y * squareSize+40);
+		}
+		System.out.println("DEBUG: sudoku["+x+"]["+y+"]: " + sudoku[x][y]);
+
+	}
+    
     /** Draws the lines that separate the squares on the board*/
     private void drawGridLines(Graphics g) {
     	int sqrtSize = (int) Math.sqrt(board.size);

@@ -1,7 +1,6 @@
 package sudoku.dialog;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -81,6 +80,7 @@ public class SudokuDialog extends JFrame {
 	private void numberClicked(int number) {
 		if(board.insert(number)) 
 			showMessage("Conflicting Number.");
+		boardPanel.updateValue(boardPanel.getGraphics(), board.getX(), board.getY(), number);
 		//showMessage("DEBUG: Number clicked: " + number);
 	}
 
