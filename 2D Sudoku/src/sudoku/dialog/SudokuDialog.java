@@ -7,6 +7,9 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.net.URL;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -82,7 +85,7 @@ public class SudokuDialog extends JFrame {
 			if(board.insert(number))
 				showMessage("Conflicting Number.");
 			if(board.isSolved())
-				showMessage("Solved!");
+				playSound("Fiesta.wav", "Solved!");
 		}
 		else
 			showMessage("Invalid number!");
@@ -176,6 +179,30 @@ public class SudokuDialog extends JFrame {
 		}
 		return null;
 	}
+	
+	/**
+	 * method that will play sounds and display a message.
+	 * 
+	 * @param sound Name of the sound file.
+	 * @param msg Message to be displayed.
+	 */
+
+	public void playSound(String sound, String msg) {
+		new Thread(new Runnable() {
+			public void run() {
+				try {
+					Clip clip = AudioSystem.getClip();
+					AudioInputStream inputStream = AudioSystem.getAudioInputStream(
+							SudokuDialog.class.getResourceAsStream("/sound/" + sound));
+					clip.open(inputStream);
+					clip.start(); 
+					showMessage(msg);
+				} catch (Exception e) {
+					System.err.println(e.getMessage());
+				}
+			}
+			}).start();
+		}
 
 	public static void main(String[] args) {
 		new SudokuDialog();

@@ -2,7 +2,6 @@ package sudoku.dialog;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -99,7 +98,7 @@ public class BoardPanel extends JPanel {
 	public void updateValues(Graphics g) {
 		int[][] sudoku = board.getArray();
 		int centerX = (board.size==9)?12:30;
-		int centerY = (board.size==9)?20:30;
+		int centerY = (board.size==9)?20:40;
         for(int i = 0;i < board.size;i++)
             for(int j = 0;j < board.size;j++)
             	if(sudoku[i][j] != 0)
