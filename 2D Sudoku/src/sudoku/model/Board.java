@@ -110,12 +110,12 @@ public class Board {
 	 * @return would return a boolean that would specify if there is already a value in the same square.
 	 */
 	public boolean repeatsOnSquare(int number) {
-		int square = getSquarePosition(x, y);
+		int square = getSquarePosition(y, x);
 		for(int i = 0; i < sudoku.length; i++) {
 			for(int j = 0; j < sudoku.length; j++) {
 				if(getSquarePosition(i, j) == square) {
 					if(sudoku[j][i] == number) {
-						//System.out.println("repeats with " + i + ", " + j);
+						System.out.println("repeats with " + i + ", " + j);
 						return true;
 					}
 				}

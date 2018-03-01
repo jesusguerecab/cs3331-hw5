@@ -70,7 +70,7 @@ public class SudokuDialog extends JFrame {
 		board.setX(x);
 		board.setY(y);
 		showMessage(String.format("DEBUG: Board clicked: x = %d, y = %d",  x, y));
-       boardPanel.repaint();
+		boardPanel.repaint();
 	}
 
 	/**
@@ -78,10 +78,14 @@ public class SudokuDialog extends JFrame {
 	 * @param number Clicked number (1-9), or 0 for "X".
 	 */
 	private void numberClicked(int number) {
-		if(board.insert(number)) 
+		if(board.insert(number)) {
 			showMessage("Conflicting Number.");
-		boardPanel.updateValue(boardPanel.getGraphics(), board.getX(), board.getY(), number);
-		//showMessage("DEBUG: Number clicked: " + number);
+		} else {
+			boardPanel.updateValue(boardPanel.getGraphics(), board.getX(), board.getY(), number);
+		}
+		if(board.isSolved()) {
+			showMessage("Solved!");
+		}
 	}
 
 	/**
