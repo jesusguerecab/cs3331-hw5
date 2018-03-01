@@ -147,8 +147,9 @@ public class Board {
 	 * @return would return true if number wasn't allowed at position (x,y)
 	 */
 	 public boolean insert(int number) {
-		 if(repeatsOnSquare(number) || repeatsColumnRow(number))
-			 return true;
+		 if(number != 0)
+			 if(repeatsOnSquare(number) || repeatsColumnRow(number))
+				 return true;
 		 sudoku[x][y] = number;
 		 return false;
 	 }
