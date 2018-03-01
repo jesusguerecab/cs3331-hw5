@@ -51,7 +51,7 @@ public class SudokuDialog extends JFrame {
 	public SudokuDialog(Dimension dim) {
 		super("Sudoku");
 		setSize(dim);
-		board = new Board(4);
+		board = new Board(9);
 		boardPanel = new BoardPanel(board, this::boardClicked);
 		configureUI();
 		//setLocationRelativeTo(null);
@@ -79,17 +79,13 @@ public class SudokuDialog extends JFrame {
 	 */
 	private void numberClicked(int number) {
 		if(number <= board.size) {
-			if(board.insert(number)) {
+			if(board.insert(number))
 				showMessage("Conflicting Number.");
-			} else {
-				boardPanel.updateValue(boardPanel.getGraphics(), board.getX(), board.getY(), number);
-			}
-			if(board.isSolved()) {
+			if(board.isSolved())
 				showMessage("Solved!");
-			}
-		} else {
-			showMessage("Invalid number!");
 		}
+		else
+			showMessage("Invalid number!");
 		boardPanel.repaint();
 	}
 

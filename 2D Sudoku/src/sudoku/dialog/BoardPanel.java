@@ -2,6 +2,7 @@ package sudoku.dialog;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -31,12 +32,12 @@ public class BoardPanel extends JPanel {
 		 */
 		void clicked(int x, int y);
 	}
-	
+
     /** Background color of the board. */
-	private static final Color boardColor = new Color(247, 223, 150);
+	private static final Color boardColor = new Color(175, 250, 250);
 	
 	/** Color of selected square. */
-	private static final Color squareColor = new Color(224,134,194);
+	private static final Color squareColor = new Color(250, 175, 175);
 
 	/** Board to be displayed. */
 	private Board board;
@@ -86,27 +87,23 @@ public class BoardPanel extends JPanel {
     
     /** Given a screen coordinate, updates/initializes private values*/
     public void selectRect(int x, int y) {
-		this.x = x;
-		this.y = y;
+    	if(this.x == x && this.y == y) 
+    		this.x = this.y = -1;
+    	else {
+    		this.x = x;
+			this.y = y;
+    	}
     }
     
 	/** Update board with values*/
-	public void updateValue(Graphics g, int x, int y, int value) {
+	public void updateValues(Graphics g) {
 		int[][] sudoku = board.getArray();
-		int centerX = 30, centerY = 40;
-		
-		if(board.size == 9) {
-			centerX = 12;
-			centerY = 20;
-		}
-		
-		if(sudoku[x][y] == 0) {
-			g.drawString(" ", locateSquaree(x, y) + centerX, locateSquaree(x, y) + centerY);
-		} else {
-			g.drawString(String.valueOf(sudoku[x][y]), x * squareSize + centerX, y * squareSize + centerY);
-		}
-		System.out.println("DEBUG: sudoku["+x+"]["+y+"]: " + sudoku[x][y]);
-
+		int centerX = (board.size==9)?12:30;
+		int centerY = (board.size==9)?20:30;
+        for(int i = 0;i < board.size;i++)
+            for(int j = 0;j < board.size;j++)
+            	if(sudoku[i][j] != 0)
+            		g.drawString(String.valueOf(sudoku[i][j]), i * squareSize + centerX, j * squareSize + centerY);
 	}
     
     /** Draws the lines that separate the squares on the board*/
@@ -137,16 +134,11 @@ public class BoardPanel extends JPanel {
         final Color oldColor = g.getColor();
         g.setColor(boardColor);
         g.fillRect(0, 0, squareSize * board.size, squareSize * board.size);
-        if(x != null || y != null) {
+        if(x != -1 && y != -1) {
 	        g.setColor(squareColor);
 	        g.fillRect(x * squareSize + 2, y * squareSize + 2, squareSize - 3, squareSize - 3);
         }
         drawGridLines(g);
-        
-        int[][]value = board.getArray();
-        for(int i = 0;i < board.size;i++)
-            for(int j = 0;j < board.size;j++)
-            	if(value[i][j] != 0)
-            		updateValue(g,i,j,value[i][j]);
+        updateValues(g);
     }
 }
