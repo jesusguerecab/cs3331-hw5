@@ -20,11 +20,9 @@ import sudoku.model.Board;
  */
 @SuppressWarnings("serial")
 public class BoardPanel extends JPanel {
-    
-	public Graphics g;
 	
 	public interface ClickListener {
-		
+
 		/** Callback to notify clicking of a square. 
 		 * 
 		 * @param x 0-based column index of the clicked square
@@ -40,25 +38,25 @@ public class BoardPanel extends JPanel {
 	/** Color of selected square. */
 	private static final Color squareColor = new Color(224,134,194);
 
-    /** Board to be displayed. */
-    private Board board;
+	/** Board to be displayed. */
+	private Board board;
 
-    /** Width and height of a square in pixels. */
-    private int squareSize;
+	/** Width and height of a square in pixels. */
+	private int squareSize;
 
-    /** Create a new board panel to display the given board. */
-    public BoardPanel(Board board, ClickListener listener) {
-        this.board = board;
-        addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-            	int xy = locateSquaree(e.getX(), e.getY());
-            	if (xy >= 0) {
-            		listener.clicked(xy / 100, xy % 100);
-            	}
-            }
-        });
-    }
-
+	/** Create a new board panel to display the given board. */
+	public BoardPanel(Board board, ClickListener listener) {
+		this.board = board;
+		addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				int xy = locateSquaree(e.getX(), e.getY());
+				if (xy >= 0) {
+					listener.clicked(xy / 100, xy % 100);
+				}
+			}
+		});
+	}
+	
     /** Set the board to be displayed. */
     public void setBoard(Board board) {
     	this.board = board;
@@ -97,27 +95,29 @@ public class BoardPanel extends JPanel {
     
     /** Draws the lines that separate the squares on the board*/
     private void drawGridLines(Graphics g) {
+    	int sqrtSize = (int) Math.sqrt(board.size);
         g.setColor(Color.GRAY);
         for(int i = 0;i < board.size;i++) {
             g.fillRect(i*squareSize, 0, 1, board.size * squareSize);
             g.fillRect(0, i*squareSize, board.size * squareSize, 1);
         }
-        for(int i = 0;i < Math.sqrt(board.size);i++) {
+        for(int i = 0;i < board.size;i++) {
 	        g.setColor(Color.BLACK);
-	        g.fillRect(2*i*squareSize, 0, 1, board.size * squareSize);
-	        g.fillRect(0, 2*i*squareSize, board.size * squareSize, 1);
+	        g.fillRect(sqrtSize*i*squareSize, 0, 1, board.size * squareSize);
+	        g.fillRect(0, sqrtSize*i*squareSize, board.size * squareSize, 1);
         }
     }
-    /** Draw the associated board. */
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g); 
+    
+	/** Draw the associated board. */
+	@Override
+	public void paint(Graphics g) {
+		super.paint(g); 
 
-        // determine the square size
-        Dimension dim = getSize();
-        squareSize = Math.min(dim.width, dim.height) / board.size;
+		// determine the square size
+		Dimension dim = getSize();
+		squareSize = Math.min(dim.width, dim.height) / board.size;
 
-        // draw background
+		// draw background
         final Color oldColor = g.getColor();
         g.setColor(boardColor);
         g.fillRect(0, 0, squareSize * board.size, squareSize * board.size);
@@ -126,9 +126,5 @@ public class BoardPanel extends JPanel {
 	        g.fillRect(x * squareSize + 2, y * squareSize + 2, squareSize - 3, squareSize - 3);
         }
         drawGridLines(g);
-        // WRITE YOUR CODE HERE ...
-        
-        // i.e., draw grid and squares.
     }
-
 }

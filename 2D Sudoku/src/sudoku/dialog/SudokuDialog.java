@@ -20,7 +20,6 @@ import javax.swing.JPanel;
 import sudoku.model.Board;
 
 /**
- * JesusWazHere
  * A dialog template for playing simple Sudoku games.
  * You need to write code for three callback methods:
  * newClicked(int), numberClicked(int) and boardClicked(int,int).
@@ -68,10 +67,10 @@ public class SudokuDialog extends JFrame {
 	 * @param y 0-based column index of the clicked square.
 	 */
 	private void boardClicked(int x, int y) {
-		// WRITE YOUR CODE HERE ...
-		//
 		boardPanel.selectRect(x, y);
-       showMessage(String.format("Board clicked: x = %d, y = %d",  x, y));
+		board.setX(x);
+		board.setY(y);
+		showMessage(String.format("DEBUG: Board clicked: x = %d, y = %d",  x, y));
        boardPanel.repaint();
 	}
 
@@ -80,10 +79,13 @@ public class SudokuDialog extends JFrame {
 	 * @param number Clicked number (1-9), or 0 for "X".
 	 */
 	private void numberClicked(int number) {
-		// WRITE YOUR CODE HERE ...
-		//
-		
-		showMessage("Number clicked: " + number);
+		board.setValue(number);
+		if((board.repeatsColumnRow()) || (board.repeatsOnSquare())){
+			showMessage("Invalid position.");
+		}else {
+			board.insert();
+		}
+		showMessage("DEBUG: Number clicked: " + number);
 	}
 
 	/**
@@ -94,17 +96,13 @@ public class SudokuDialog extends JFrame {
 	 * @param size Requested puzzle size, either 4 or 9.
 	 */
 	private void newClicked(int size) {
-		// WRITE YOUR CODE HERE ...
-		//
-		String optionsButton[] = {"No","Yes"};
-		if(!board.isSolved()) {
-			int in = JOptionPane.showOptionDialog(null,"Play a new game?","New Game",JOptionPane.YES_NO_OPTION,JOptionPane.PLAIN_MESSAGE,null,optionsButton,optionsButton[1]);
-	        if(in==JOptionPane.YES_OPTION)
-		        return;
-		}
+		int confirm = JOptionPane.showConfirmDialog(null, "Play new game?", "New Game", JOptionPane.YES_NO_OPTION);
+		if(confirm == JOptionPane.NO_OPTION)
+			return;
 		board = new Board(size);
+		board.createBoard();
 		boardPanel.setBoard(board);
-		showMessage("New clicked: " + size + " " + board.size);
+		showMessage("New clicked: " + size);
 		boardPanel.repaint();
 	}
 
