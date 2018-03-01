@@ -83,12 +83,12 @@ public class SudokuDialog extends JFrame {
 	private void numberClicked(int number) {
 		if(number <= board.size) {
 			if(board.insert(number))
-				showMessage("Conflicting Number.");
+				playSound("Wrong.wav", "Conflicting number.");
 			if(board.isSolved())
 				playSound("Fiesta.wav", "Solved!");
 		}
 		else
-			showMessage("Invalid number!");
+			playSound("Wrong.wav", "Invalid number.");
 		boardPanel.repaint();
 	}
 
