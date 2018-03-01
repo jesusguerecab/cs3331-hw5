@@ -93,10 +93,17 @@ public class BoardPanel extends JPanel {
 	/** Update board with values*/
 	public void updateValue(Graphics g, int x, int y, int value) {
 		int[][] sudoku = board.getArray();
+		int centerX = 30, centerY = 40;
+		
+		if(board.size == 9) {
+			centerX = 12;
+			centerY = 20;
+		}
+		
 		if(sudoku[x][y] == 0) {
-			g.drawString(" ", locateSquaree(x, y) + 30, locateSquaree(x, y) + 40);
+			g.drawString(" ", locateSquaree(x, y) + centerX, locateSquaree(x, y) + centerY);
 		} else {
-			g.drawString(String.valueOf(sudoku[x][y]), x * squareSize+30, y * squareSize+40);
+			g.drawString(String.valueOf(sudoku[x][y]), x * squareSize + centerX, y * squareSize + centerY);
 		}
 		System.out.println("DEBUG: sudoku["+x+"]["+y+"]: " + sudoku[x][y]);
 

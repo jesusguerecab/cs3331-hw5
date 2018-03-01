@@ -90,6 +90,7 @@ public class SudokuDialog extends JFrame {
 		} else {
 			showMessage("Invalid number!");
 		}
+		boardPanel.repaint();
 	}
 
 	/**
