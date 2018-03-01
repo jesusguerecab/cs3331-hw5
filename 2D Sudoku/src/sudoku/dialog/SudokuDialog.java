@@ -69,7 +69,7 @@ public class SudokuDialog extends JFrame {
 		boardPanel.selectRect(x, y);
 		board.setX(x);
 		board.setY(y);
-		showMessage(String.format("DEBUG: Board clicked: x = %d, y = %d",  x, y));
+		//showMessage(String.format("DEBUG: Board clicked: x = %d, y = %d",  x, y));
 		boardPanel.repaint();
 	}
 
@@ -102,7 +102,7 @@ public class SudokuDialog extends JFrame {
 			board = new Board(size);
 			board.createBoard();
 			boardPanel.setBoard(board);
-			showMessage("New clicked: " + size);
+			//showMessage("New clicked: " + size);
 			boardPanel.repaint();
 		}
 	}
