@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.io.BufferedInputStream;
 import java.net.URL;
 
 import javax.sound.sampled.AudioInputStream;
@@ -189,12 +190,12 @@ public class SudokuDialog extends JFrame {
 	public void playSound(String sound, String msg) {
 		new Thread(new Runnable() {
 			public void run() {
-				try {
+				try {	
 					Clip clip = AudioSystem.getClip();
-					AudioInputStream inputStream = AudioSystem.getAudioInputStream(
-							SudokuDialog.class.getResourceAsStream("/sound/" + sound));
+					BufferedInputStream myStream = new BufferedInputStream(getClass().getResourceAsStream("/sound/" + sound)); 
+					AudioInputStream inputStream = AudioSystem.getAudioInputStream(myStream);
 					clip.open(inputStream);
-					clip.start(); 
+					clip.start();
 					showMessage(msg); 
 				} catch (Exception e) {
 					System.err.println(e.getMessage());
