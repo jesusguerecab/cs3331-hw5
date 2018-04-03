@@ -1,12 +1,17 @@
 package sudoku.model;
 
+import java.util.Random;
+
 /** An abstraction of Sudoku puzzle. */
 public class Board {
+
+	Random r = new Random();
 
 	/** Size of this board (number of columns/rows). */
 	public final int size;
 
 	private int[][] sudoku;
+	private boolean[][] preFilled;
 
 	/**currently selected board square*/
 	private int x, y;
@@ -15,13 +20,13 @@ public class Board {
 	public Board(int size) {
 		this.size = size;
 		createBoard();
+		fillBoard();
 		x = y = -1;
 	}
 
 	/** Default constructor which sets the size of the board to 4 by default and creates the board. */ 
 	public Board() {
 		this(4);
-		createBoard();
 	}
 
 	/** Return the size of this board. */
@@ -37,12 +42,35 @@ public class Board {
 	/** Creates an empty array with the given size of the board. */
 	public void createBoard() {
 		sudoku = new int[size][size];
+		preFilled = new boolean[size][size];
 		for(int i = 0; i < size; i++) {
 			for(int j = 0; j < size; j++) {
 				sudoku[i][j] = 0;
+				preFilled[i][j] = false;
 			}
 		}
 	}
+
+	/** Pre-fills board according to its size.*/
+	public void fillBoard() {
+		int ammount = (size == 9) ? 23 : 7;
+		for(int i = 0; i < ammount; i++) {
+			boolean valid = false;
+			do {
+				x = (int) (Math.random() * size);
+				y = (int) (Math.random() * size);
+				int value = (int) (Math.random() * size+1);
+				if(sudoku[x][y] == 0) {
+					if(insert(value)) {
+						valid = true;
+						preFilled[x][y] = true;
+					}
+				}
+			} while (!valid);
+		}
+	}
+
+
 
 	/** Checks if the sudoku board has been solved.
 	 * 
@@ -144,5 +172,4 @@ public class Board {
 	public void clearPos() {
 		x = y = -1;
 	}
-
 }
