@@ -5,8 +5,11 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedInputStream;
 import java.net.URL;
+import java.util.Date;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -15,6 +18,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -92,22 +96,31 @@ public class SudokuDialog extends JFrame {
 	}
 
 	/**
-	 * Callback to be invoked when a new button is clicked.
-	 * If the current game is over, start a new game of the given size;
-	 * otherwise, prompt the user for a confirmation and then proceed
-	 * accordingly.
-	 * @param size Requested puzzle size, either 4 or 9.
+	 * CREATE COMMENT
 	 */
-	private void newClicked(int size) {
-		if(!board.isSolved()) {
-			int confirm = JOptionPane.showConfirmDialog(null, "Play new game?", "New Game", JOptionPane.YES_NO_OPTION);
-			if(confirm == JOptionPane.NO_OPTION) return;
+	private void newClicked(int btnNum) {
+		switch(btnNum) {
+		case 0: newBoardMenu(); break;
 		}
-		board = new Board(size);
-		board.createBoard();
-		boardPanel.setBoard(board);
-		//showMessage("New clicked: " + size);
-		boardPanel.repaint();
+	}
+	
+	private void newBoardMenu() {
+		String[] options = new String[] {"4x4", "9x9","Cancel"};
+	    int response = JOptionPane.showOptionDialog(null, "Quit the current game?\nSelect the board size.", "New Game",
+	        JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
+	        null, options, options[0]);
+	   switch(response) {
+	   case 0:
+			board = new Board(4);
+			boardPanel.setBoard(board);
+			boardPanel.repaint();
+			break;
+	   case 1:
+		   board = new Board(9);
+			boardPanel.setBoard(board);
+			boardPanel.repaint();
+			break;
+	   }
 	}
 
 	/**
@@ -140,13 +153,17 @@ public class SudokuDialog extends JFrame {
 
 	/** Create a control panel consisting of new and number buttons. */
 	private JPanel makeControlPanel() {
+		//tool bar
 		JPanel newButtons = new JPanel(new FlowLayout());
-		JButton new4Button = new JButton("New (4x4)");
-		for (JButton button: new JButton[] { new4Button, new JButton("New (9x9)") }) {
+		JButton menuButton = new JButton("1");
+		JButton solvableButton = new JButton("2");
+		JButton solveButton = new JButton("3");
+		for (JButton button: new JButton[] { menuButton, solvableButton, solveButton }) {
 			button.setFocusPainted(false);
 			button.addActionListener(e -> {
-				newClicked(e.getSource() == new4Button ? 4 : 9);
+				newClicked(e.getSource() == menuButton ? 0 : 1);
 			});
+            button.setPreferredSize(new Dimension(70, 30));
 			newButtons.add(button);
 		}
 		newButtons.setAlignmentX(LEFT_ALIGNMENT);
