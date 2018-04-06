@@ -52,7 +52,7 @@ public class Board {
 	}
 
 	/** Pre-fills board according to its size.*/
-	public void fillBoard() {
+	private void fillBoard() {
 		int ammount = (size == 9) ? 23 : 7;
 		for(int i = 0; i < ammount; i++) {
 			boolean valid = false;
@@ -69,8 +69,20 @@ public class Board {
 			} while (!valid);
 		}
 	}
-
-
+	
+	/** Solves a sudoku board.*/
+	public void solveBoard() {
+		do {
+			x = (int) (Math.random() * size);
+			y = (int) (Math.random() * size);
+			int value = (int) (Math.random() * size+1);
+			if(sudoku[x][y] == 0) {
+				if(insert(value)) {
+					preFilled[x][y] = true;
+				}
+			}
+		} while (!isSolved());
+	}
 
 	/** Checks if the sudoku board has been solved.
 	 * 
@@ -144,7 +156,7 @@ public class Board {
 	 * @return would return true if number wasn't allowed at position (x,y)
 	 */
 	public boolean insert(int number) {
-		if(x == -1 || y == -1) return false; 
+		if(x == -1 || y == -1) return false;
 		if(number != 0)
 			if(repeatsOnSquare(number) || repeatsColumnRow(number))
 				return true;
