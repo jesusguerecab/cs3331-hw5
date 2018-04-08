@@ -5,6 +5,9 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.BufferedInputStream;
 import java.net.URL;
 
@@ -17,8 +20,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JToolBar;
 
 import sudoku.model.Board;
 
@@ -46,6 +53,8 @@ public class SudokuDialog extends JFrame {
 	/** Message bar to display various messages. */
 	private JLabel msgBar = new JLabel("");
 
+	private JMenuItem solve;
+	
 	/** Create a new dialog. */
 	public SudokuDialog() {
 		this(DEFAULT_SIZE);
@@ -95,9 +104,7 @@ public class SudokuDialog extends JFrame {
 	 * CREATE COMMENT
 	 */
 	private void newClicked(int btnNum) {
-		switch(btnNum) {
-		case 0: newBoardMenu(); break;
-		}
+		
 	}
 	
 	private void newBoardMenu() {
@@ -149,21 +156,58 @@ public class SudokuDialog extends JFrame {
 
 	/** Create a control panel consisting of new and number buttons. */
 	private JPanel makeControlPanel() {
-		//tool bar
+		//menu
+		JMenuBar menuBar = new JMenuBar();
+		this.setJMenuBar(menuBar);
+		
+		JMenu menu = new JMenu("Game");
+		menu.setMnemonic(KeyEvent.VK_G);
+		menu.getAccessibleContext().setAccessibleDescription("Game menu");
+		menuBar.add(menu);
+		
+		JMenuItem newGameItem = new JMenuItem("New Game", KeyEvent.VK_N);
+		newGameItem.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent ev) {
+		    	newBoardMenu();
+		    }
+		});
+	    menu.add(newGameItem);
+	    
+	    JMenuItem solveBoardItem = new JMenuItem("Solve Board", KeyEvent.VK_N);
+	    solveBoardItem.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent ev) {
+	            board.solveBoard();
+		    }
+		});
+	    menu.add(solveBoardItem);
+	    
+	    //toolbar
+	    JToolBar toolBar = new JToolBar("Sudoku");
+	    JButton btn = new JButton(createImageIcon("playbutton.png"));
+	    btn.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent ev) {
+		    	newBoardMenu();
+		    }
+		});
+	    btn.setToolTipText("Play a new game");
+	    btn.setFocusPainted(false);
+	    toolBar.add(btn);
+
+	    /*
 		JPanel newButtons = new JPanel(new FlowLayout());
 		JButton menuButton = new JButton("1");
 		JButton solvableButton = new JButton("2");
-		JButton solveButton = new JButton("3");
-		for (JButton button: new JButton[] { menuButton, solvableButton, solveButton }) {
+		for (JButton button: new JButton[] { menuButton, solvableButton }) {
 			button.setFocusPainted(false);
 			button.addActionListener(e -> {
-				newClicked(e.getSource() == menuButton ? 0 : 1);
+				
 			});
             button.setPreferredSize(new Dimension(70, 30));
 			newButtons.add(button);
 		}
 		newButtons.setAlignmentX(LEFT_ALIGNMENT);
-
+*/
+		
 		// buttons labeled 1, 2, ..., 9, and X.
 		JPanel numberButtons = new JPanel(new FlowLayout());
 		int maxNumber = board.size() + 1;
@@ -179,7 +223,8 @@ public class SudokuDialog extends JFrame {
 
 		JPanel content = new JPanel();
 		content.setLayout(new BoxLayout(content, BoxLayout.PAGE_AXIS));
-		content.add(newButtons);
+		content.add(toolBar);
+		//content.add(newButtons);
 		content.add(numberButtons);
 		return content;
 	}
@@ -220,4 +265,5 @@ public class SudokuDialog extends JFrame {
 	public static void main(String[] args) {
 		new SudokuDialog();
 	}
+
 }
