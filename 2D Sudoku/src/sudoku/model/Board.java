@@ -61,7 +61,7 @@ public class Board {
 				y = (int) (Math.random() * size);
 				int value = (int) (Math.random() * size+1);
 				if(sudoku[x][y] == 0) {
-					if(insert(value)) {
+					if(!insert(value)) {
 						valid = true;
 						preFilled[x][y] = true;
 					}
@@ -78,7 +78,7 @@ public class Board {
 			int value = (int) (Math.random() * size+1);
 			if(sudoku[x][y] == 0) {
 				if(insert(value)) {
-					preFilled[x][y] = true;
+					preFilled[y][x] = true;
 				}
 			}
 		} while (!isSolved());
@@ -149,6 +149,11 @@ public class Board {
 		}
 		return false;
 	}
+	
+	/** Checks if a position was filled by program or not.*/
+	public boolean isPrefilled() {
+		return preFilled[x][y];
+	}
 
 	/** Checks if there's an error with inserting the value, if none would insert value.
 	 * 
@@ -157,6 +162,8 @@ public class Board {
 	 */
 	public boolean insert(int number) {
 		if(x == -1 || y == -1) return false;
+		if(isPrefilled()) 
+			return true;
 		if(number != 0)
 			if(repeatsOnSquare(number) || repeatsColumnRow(number))
 				return true;
@@ -175,6 +182,7 @@ public class Board {
 
 	public void setY(int y) {
 		this.y = y;
+		System.out.println("DEBUG: pos: (" + this.x + ", " + this.y +") prefilled: " + isPrefilled());
 	}
 
 	public int getY() {
