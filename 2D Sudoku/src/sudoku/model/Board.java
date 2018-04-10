@@ -1,5 +1,9 @@
 package sudoku.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 /** An abstraction of Sudoku puzzle. */
@@ -12,7 +16,8 @@ public class Board {
 
 	private int[][] sudoku;
 	private boolean[][] preFilled;
-
+	int given;
+	
 	/**currently selected board square*/
 	private int x, y;
 
@@ -20,7 +25,8 @@ public class Board {
 	public Board(int size) {
 		this.size = size;
 		createBoard();
-		fillBoard();
+		x = y = 0;
+		fillBoard(0);
 		x = y = -1;
 	}
 
@@ -52,22 +58,39 @@ public class Board {
 	}
 
 	/** Pre-fills board according to its size.*/
-	private void fillBoard() {
-		int ammount = (size == 9) ? 23 : 7;
-		for(int i = 0; i < ammount; i++) {
-			boolean valid = false;
-			do {
-				x = (int) (Math.random() * size);
-				y = (int) (Math.random() * size);
-				int value = (int) (Math.random() * size+1);
-				if(sudoku[x][y] == 0) {
-					if(!insert(value)) {
-						valid = true;
-						preFilled[x][y] = true;
+	private boolean fillBoard(int count) {
+		int ammount = (size == 9) ?  23 : 7;
+		int _x = (int) (Math.random() * size);
+		int _y = (int) (Math.random() * size);
+		if(count < ammount) {
+			while(sudoku[_x][_y] != 0) {
+				_x = (int) (Math.random() * size);
+				_y = (int) (Math.random() * size);
+			}
+			List<Integer> test = generate();
+			for(int value = 0; value < size;value++) {
+					x = _x;
+					y = _y;
+					if(!insert(test.get(value))) {
+						if(fillBoard(count+1))
+							sudoku[_x][_y] = 0;
+						else {
+							preFilled[_x][_y] = true;
+							return false;
+						}
 					}
-				}
-			} while (!valid);
+			}
 		}
+		return false;
+	}
+	
+	private List<Integer> generate(){
+		List<Integer> test = new ArrayList<>();
+		for(int i = 1; i <= size;i++) {
+			test.add(i);
+		}
+		Collections.shuffle(test);
+		return test;
 	}
 	
 	/** Solves a sudoku board.*/
