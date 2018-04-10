@@ -78,7 +78,7 @@ public class Board {
 			int value = (int) (Math.random() * size+1);
 			if(sudoku[x][y] == 0) {
 				if(insert(value)) {
-					preFilled[y][x] = true;
+					preFilled[x][y] = true;
 				}
 			}
 		} while (!isSolved());
@@ -89,11 +89,14 @@ public class Board {
 	 * @return returns whether the board has been solved or not.
 	 */
 	public boolean isSolved() {
+		int total = (size == 9) ? 45 : 10;
 		for(int i = 0; i < size; i++) {
+			int sum = 0;
 			for(int j = 0; j < size; j++) {
-				if(sudoku[i][j] == 0)
-					return false;
+				sum += sudoku[i][j];
 			}
+			if(sum != total)
+				return false;
 		}
 		return true;
 	}
