@@ -177,6 +177,7 @@ public class SudokuDialog extends JFrame {
 	    solveBoardItem.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent ev) {
 	            board.solveBoard();
+	            boardPanel.repaint();
 		    }
 		});
 	    menu.add(solveBoardItem);
