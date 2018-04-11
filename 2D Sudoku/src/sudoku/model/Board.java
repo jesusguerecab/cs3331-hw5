@@ -1,7 +1,6 @@
 package sudoku.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -16,8 +15,7 @@ public class Board {
 
 	private int[][] sudoku;
 	private boolean[][] preFilled;
-	int given;
-	
+
 	/**currently selected board square*/
 	private int x, y;
 
@@ -69,21 +67,21 @@ public class Board {
 			}
 			List<Integer> test = generate();
 			for(int value = 0; value < size;value++) {
-					x = _x;
-					y = _y;
-					if(!insert(test.get(value))) {
-						if(fillBoard(count+1))
-							sudoku[_x][_y] = 0;
-						else {
-							preFilled[_x][_y] = true;
-							return false;
-						}
+				x = _x;
+				y = _y;
+				if(!insert(test.get(value))) {
+					if(fillBoard(count+1))
+						sudoku[_x][_y] = 0;
+					else {
+						preFilled[_x][_y] = true;
+						return false;
 					}
+				}
 			}
 		}
 		return false;
 	}
-	
+
 	private List<Integer> generate(){
 		List<Integer> test = new ArrayList<>();
 		for(int i = 1; i <= size;i++) {
@@ -92,19 +90,33 @@ public class Board {
 		Collections.shuffle(test);
 		return test;
 	}
-	
-	/** Solves a sudoku board.*/
-	public void solveBoard() {
-		do {
-			x = (int) (Math.random() * size);
-			y = (int) (Math.random() * size);
-			int value = (int) (Math.random() * size+1);
-			if(sudoku[x][y] == 0) {
-				if(insert(value)) {
-					preFilled[x][y] = true;
+
+	/** Solves a sudoku board.
+	 * 
+	 * @return returns whether the board was solved or not.
+	 */
+	public boolean solveBoard() {
+		for(int x = 0; x < size; x++) {
+			for(int y = 0; y < size; y++) {
+				if(sudoku[x][y] == 0) {
+					for(int i = 0; i < size; i++) {
+						int value = (int) (Math.random() * size + 1);
+						this.x = x;
+						this.y = y;
+						if(!insert(value)) {
+							sudoku[x][y] = value;
+							if(solveBoard()) {
+								return true;
+							} else {
+								sudoku[x][y] = 0;
+							}
+						}
+					}
+					return false;
 				}
 			}
-		} while (!isSolved());
+		}
+		return true;
 	}
 
 	/** Checks if the sudoku board has been solved.
@@ -166,16 +178,14 @@ public class Board {
 		for(int i = 0; i < sudoku.length; i++) {
 			for(int j = 0; j < sudoku.length; j++) {
 				if(getSquarePosition(i, j) == square) {
-					if(sudoku[j][i] == number) {
-						//System.out.println(Debug: "repeats with " + i + ", " + j);
+					if(sudoku[j][i] == number)
 						return true;
-					}
 				}
 			}
 		}
 		return false;
 	}
-	
+
 	/** Checks if a position was filled by program or not.*/
 	public boolean isPrefilled() {
 		return preFilled[x][y];
@@ -208,7 +218,7 @@ public class Board {
 
 	public void setY(int y) {
 		this.y = y;
-		System.out.println("DEBUG: pos: (" + this.x + ", " + this.y +") prefilled: " + isPrefilled());
+		//System.out.println("DEBUG: pos: (" + this.x + ", " + this.y +") prefilled: " + isPrefilled());
 	}
 
 	public int getY() {
