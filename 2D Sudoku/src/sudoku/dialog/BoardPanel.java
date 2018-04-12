@@ -104,6 +104,7 @@ public class BoardPanel extends JPanel {
 	/** Updates board with values*/
 	public void updateValues(Graphics g) {
 		int[][] sudoku = board.getArray();
+        g.setColor(Color.BLACK);
 		int centerX = (board.size==9)?12:30;
 		int centerY = (board.size==9)?20:40;
         for(int i = 0;i < board.size;i++)
@@ -112,6 +113,16 @@ public class BoardPanel extends JPanel {
             		g.drawString(String.valueOf(sudoku[i][j]), i * squareSize + centerX, j * squareSize + centerY);
 	}
     
+	/** Darkens Pre-Filled cells*/
+	public void darkenPreFill(Graphics g) {
+		boolean[][] preFilled = board.getPreFill();
+		g.setColor(boardColor.darker());
+		for(int row = 0;row < board.size;row++)
+			for(int column = 0;column < board.size;column++)
+				if(preFilled[row][column])
+					g.fillRect(row * squareSize + 2, column * squareSize + 2, squareSize - 3, squareSize - 3);
+	}
+	
     /** Draws the lines that separate the squares on the board*/
     private void drawGridLines(Graphics g) {
     	int sqrtSize = (int) Math.sqrt(board.size);
@@ -137,7 +148,6 @@ public class BoardPanel extends JPanel {
 		squareSize = Math.min(dim.width, dim.height) / board.size;
 
 		// draw background
-        final Color oldColor = g.getColor();
         g.setColor(boardColor);
         g.fillRect(0, 0, squareSize * board.size, squareSize * board.size);
         if(x != -1 && y != -1) {
@@ -145,6 +155,7 @@ public class BoardPanel extends JPanel {
 	        g.fillRect(x * squareSize + 2, y * squareSize + 2, squareSize - 3, squareSize - 3);
         }
         drawGridLines(g);
+        darkenPreFill(g);
         updateValues(g);
     }
 }

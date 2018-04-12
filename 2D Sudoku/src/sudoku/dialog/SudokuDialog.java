@@ -99,15 +99,83 @@ public class SudokuDialog extends JFrame {
 			playSound("Wrong.wav", "Invalid number.");
 		boardPanel.repaint();
 	}
-
-	/**
-	 * CREATE COMMENT
-	 */
-	private void newClicked(int btnNum) {
+	
+	private JMenu initBoardMenu() {
+		JMenu menu = new JMenu("Game");
+		menu.setMnemonic(KeyEvent.VK_G);
+		menu.getAccessibleContext().setAccessibleDescription("Game menu");
 		
+		JMenuItem newGameItem = new JMenuItem("New Game");
+		newGameItem.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent ev) {
+		    	requestNewBoard();
+		    }
+		});
+		menu.add(newGameItem);
+		
+		newGameItem = new JMenuItem("Check");
+		newGameItem.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent ev) {
+		    	//
+		    	//RUN CHECK METHOD HERE
+		    	//
+		    }
+		});
+		menu.add(newGameItem);
+		
+		newGameItem = new JMenuItem("Solve");
+		newGameItem.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent ev) {
+		    	board.tryToSolve();
+		    	boardPanel.repaint();
+		    }
+		});
+		menu.add(newGameItem);
+		
+		return menu;
 	}
 	
-	private void newBoardMenu() {
+	private JToolBar initToolBar() {
+		JToolBar toolBar = new JToolBar("Sudoku");
+	    
+		//new game button
+	    JButton btn = new JButton(createImageIcon("playbutton.png"));
+	    btn.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent ev) {
+		    	requestNewBoard();
+		    }
+		});
+	    btn.setToolTipText("Play a new game");
+	    toolBar.add(btn);
+	    
+	    //check button
+	    btn = new JButton(createImageIcon("check.png"));
+	    btn.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent ev) {
+		    	//
+		    	//RUN CHECK METHOD HERE
+		    	//
+		    }
+		});
+	    btn.setToolTipText("Check");
+	    toolBar.add(btn);
+	    
+	    //solve button
+	    btn = new JButton(createImageIcon("solve.png"));
+	    btn.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent ev) {
+		    	board.tryToSolve();
+		    	boardPanel.repaint();
+		    }
+		});
+	    btn.setToolTipText("Solve");
+	    toolBar.add(btn);
+	    
+	    return toolBar;
+	}
+	
+	/* Ask user for new board size and initializes it*/
+	private void requestNewBoard() {
 		String[] options = new String[] {"4x4", "9x9","Cancel"};
 	    int response = JOptionPane.showOptionDialog(null, "Quit the current game?\nSelect the board size.", "New Game",
 	        JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
@@ -125,7 +193,7 @@ public class SudokuDialog extends JFrame {
 			break;
 	   }
 	}
-
+	
 	/**
 	 * Display the given string in the message bar.
 	 * @param msg Message to be displayed.
@@ -156,58 +224,14 @@ public class SudokuDialog extends JFrame {
 
 	/** Create a control panel consisting of new and number buttons. */
 	private JPanel makeControlPanel() {
-		//menu
+		
 		JMenuBar menuBar = new JMenuBar();
 		this.setJMenuBar(menuBar);
 		
-		JMenu menu = new JMenu("Game");
-		menu.setMnemonic(KeyEvent.VK_G);
-		menu.getAccessibleContext().setAccessibleDescription("Game menu");
+		JMenu menu = initBoardMenu();
 		menuBar.add(menu);
 		
-		JMenuItem newGameItem = new JMenuItem("New Game", KeyEvent.VK_N);
-		newGameItem.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent ev) {
-		    	newBoardMenu();
-		    }
-		});
-	    menu.add(newGameItem);
-	    
-	    JMenuItem solveBoardItem = new JMenuItem("Solve Board", KeyEvent.VK_N);
-	    solveBoardItem.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent ev) {
-	            board.solveBoard();
-	            boardPanel.repaint();
-		    }
-		});
-	    menu.add(solveBoardItem);
-	    
-	    //toolbar
-	    JToolBar toolBar = new JToolBar("Sudoku");
-	    JButton btn = new JButton(createImageIcon("playbutton.png"));
-	    btn.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent ev) {
-		    	newBoardMenu();
-		    }
-		});
-	    btn.setToolTipText("Play a new game");
-	    btn.setFocusPainted(false);
-	    toolBar.add(btn);
-
-	    /*
-		JPanel newButtons = new JPanel(new FlowLayout());
-		JButton menuButton = new JButton("1");
-		JButton solvableButton = new JButton("2");
-		for (JButton button: new JButton[] { menuButton, solvableButton }) {
-			button.setFocusPainted(false);
-			button.addActionListener(e -> {
-				
-			});
-            button.setPreferredSize(new Dimension(70, 30));
-			newButtons.add(button);
-		}
-		newButtons.setAlignmentX(LEFT_ALIGNMENT);
-*/
+	    JToolBar toolBar = initToolBar();
 		
 		// buttons labeled 1, 2, ..., 9, and X.
 		JPanel numberButtons = new JPanel(new FlowLayout());
@@ -229,7 +253,7 @@ public class SudokuDialog extends JFrame {
 		content.add(numberButtons);
 		return content;
 	}
-
+	
 	/** Create an image icon from the given image file. */
 	private ImageIcon createImageIcon(String filename) {
 		URL imageUrl = getClass().getResource(IMAGE_DIR + filename);

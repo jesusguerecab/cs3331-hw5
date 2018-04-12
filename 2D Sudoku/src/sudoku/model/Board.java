@@ -19,6 +19,8 @@ public class Board {
 	/**currently selected board square*/
 	private int x, y;
 
+	public Solver sAlgorithm;
+	
 	/** Create a new board of the given size. */
 	public Board(int size) {
 		this.size = size;
@@ -26,6 +28,7 @@ public class Board {
 		x = y = 0;
 		fillBoard(0);
 		x = y = -1;
+		sAlgorithm = new S_Algorithm();
 	}
 
 	/** Default constructor which sets the size of the board to 4 by default and creates the board. */ 
@@ -58,13 +61,12 @@ public class Board {
 	/** Pre-fills board according to its size.*/
 	private boolean fillBoard(int count) {
 		int ammount = (size == 9) ?  23 : 7;
-		int _x = (int) (Math.random() * size);
-		int _y = (int) (Math.random() * size);
+		int _x = x, _y = y;
 		if(count < ammount) {
-			while(sudoku[_x][_y] != 0) {
+			do{
 				_x = (int) (Math.random() * size);
 				_y = (int) (Math.random() * size);
-			}
+			}while(sudoku[_x][_y] != 0);
 			List<Integer> test = generate();
 			for(int value = 0; value < size;value++) {
 				x = _x;
@@ -91,34 +93,10 @@ public class Board {
 		return test;
 	}
 
-	/** Solves a sudoku board.
-	 * 
-	 * @return returns whether the board was solved or not.
-	 */
-	public boolean solveBoard() {
-		for(int x = 0; x < size; x++) {
-			for(int y = 0; y < size; y++) {
-				if(sudoku[x][y] == 0) {
-					for(int i = 0; i < size; i++) {
-						int value = (int) (Math.random() * size + 1);
-						this.x = x;
-						this.y = y;
-						if(!insert(value)) {
-							sudoku[x][y] = value;
-							if(solveBoard()) {
-								return true;
-							} else {
-								sudoku[x][y] = 0;
-							}
-						}
-					}
-					return false;
-				}
-			}
-		}
-		return true;
+	public void tryToSolve() {
+		sudoku =  sAlgorithm.solve(this).getArray();
 	}
-
+	
 	/** Checks if the sudoku board has been solved.
 	 * 
 	 * @return returns whether the board has been solved or not.
@@ -227,5 +205,9 @@ public class Board {
 
 	public void clearPos() {
 		x = y = -1;
+	}
+
+	public boolean[][] getPreFill() {
+		return preFilled;
 	}
 }
