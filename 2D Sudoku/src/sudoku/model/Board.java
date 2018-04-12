@@ -1,10 +1,5 @@
 package sudoku.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-
 /** An abstraction of Sudoku puzzle. */
 public class Board {
 
@@ -19,7 +14,7 @@ public class Board {
 
 	/** Algorithm used to try and solve sudoku*/
 	public Solver sAlgorithm;
-	
+
 	/** Create a new board of the given size. */
 	public Board(int size) {
 		this.size = size;
@@ -70,7 +65,7 @@ public class Board {
 		}
 		removeNotFilled();
 	}
-	
+
 	/** Removes sudoku items not in pre filled*/
 	private void removeNotFilled() {
 		for(x = 0;x < size;x++)
@@ -84,11 +79,12 @@ public class Board {
 	 * */
 	public boolean check() {
 		int[][] temp = sAlgorithm.solve(this);
-		if(temp != null) {return true;}
+		if(temp != null)
+			return true;
 		return false;
 	}
-	
-	/*
+
+	/**
 	 * @return false if couldn't solve
 	 */
 	public boolean tryToSolve() {
@@ -99,7 +95,7 @@ public class Board {
 		}
 		return false;
 	}
-	
+
 	/** Checks if the sudoku board has been solved.
 	 * 
 	 * @return returns whether the board has been solved or not.
@@ -167,7 +163,10 @@ public class Board {
 		return false;
 	}
 
-	/** Checks if a position was filled by program or not.*/
+	/** Checks if a position was filled by program or not.
+	 * 
+	 * @return would return true if position was prefilled.
+	 */
 	public boolean isPrefilled() {
 		return preFilled[x][y];
 	}
@@ -199,7 +198,6 @@ public class Board {
 
 	public void setY(int y) {
 		this.y = y;
-		//System.out.println("DEBUG: pos: (" + this.x + ", " + this.y +") prefilled: " + isPrefilled());
 	}
 
 	public int getY() {

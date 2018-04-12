@@ -52,8 +52,6 @@ public class SudokuDialog extends JFrame {
 
 	/** Message bar to display various messages. */
 	private JLabel msgBar = new JLabel("");
-
-	private JMenuItem solve;
 	
 	/** Create a new dialog. */
 	public SudokuDialog() {
@@ -100,6 +98,12 @@ public class SudokuDialog extends JFrame {
 		boardPanel.repaint();
 	}
 	
+	
+	/**
+	 * Initializes menu named Game menu with options check, solve
+	 * 
+	 * @return JMenu returns menu generated.
+	 */
 	private JMenu initBoardMenu() {
 		JMenu menu = new JMenu("Game");
 		menu.setMnemonic(KeyEvent.VK_G);
@@ -133,6 +137,12 @@ public class SudokuDialog extends JFrame {
 		return menu;
 	}
 	
+	
+	/**
+	 * Creates a tool bar menu with buttons and icons.
+	 * 
+	 * @return JToolBar return tool bal with icons.
+	 */
 	private JToolBar initToolBar() {
 		JToolBar toolBar = new JToolBar("Sudoku");
 	    
@@ -171,7 +181,7 @@ public class SudokuDialog extends JFrame {
 	    return toolBar;
 	}
 	
-	/* Ask user for new board size and initializes it*/
+	/** Ask user for new board size and initializes it */
 	private void requestNewBoard() {
 		String[] options = new String[] {"4x4", "9x9","Cancel"};
 	    int response = JOptionPane.showOptionDialog(null, "Quit the current game?\nSelect the board size.", "New Game",
@@ -287,5 +297,4 @@ public class SudokuDialog extends JFrame {
 	public static void main(String[] args) {
 		new SudokuDialog();
 	}
-
 }
