@@ -116,9 +116,7 @@ public class SudokuDialog extends JFrame {
 		newGameItem = new JMenuItem("Check");
 		newGameItem.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent ev) {
-		    	//
-		    	//RUN CHECK METHOD HERE
-		    	//
+		    	boolean solvable = board.check();
 		    }
 		});
 		menu.add(newGameItem);
@@ -152,9 +150,7 @@ public class SudokuDialog extends JFrame {
 	    btn = new JButton(createImageIcon("check.png"));
 	    btn.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent ev) {
-		    	//
-		    	//RUN CHECK METHOD HERE
-		    	//
+		    	boolean solvable = board.check();
 		    }
 		});
 	    btn.setToolTipText("Check");

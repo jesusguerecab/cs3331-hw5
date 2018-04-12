@@ -8,8 +8,6 @@ import java.util.Random;
 /** An abstraction of Sudoku puzzle. */
 public class Board {
 
-	Random r = new Random();
-
 	/** Size of this board (number of columns/rows). */
 	public final int size;
 
@@ -19,6 +17,7 @@ public class Board {
 	/**currently selected board square*/
 	private int x, y;
 
+	/** Algorithm used to try and solve sudoku*/
 	public Solver sAlgorithm;
 	
 	/** Create a new board of the given size. */
@@ -26,9 +25,9 @@ public class Board {
 		this.size = size;
 		createBoard();
 		x = y = 0;
-		fillBoard(0);
 		x = y = -1;
 		sAlgorithm = new S_Algorithm();
+		partialFill();
 	}
 
 	/** Default constructor which sets the size of the board to 4 by default and creates the board. */ 
@@ -58,43 +57,47 @@ public class Board {
 		}
 	}
 
-	/** Pre-fills board according to its size.*/
-	private boolean fillBoard(int count) {
-		int ammount = (size == 9) ?  23 : 7;
-		int _x = x, _y = y;
-		if(count < ammount) {
+	/** partially fills board according to its size.*/
+	private void partialFill() {
+		int amount = (size == 9) ?  23 : 8;
+		tryToSolve();
+		for(;amount >= 0;amount--) {
 			do{
-				_x = (int) (Math.random() * size);
-				_y = (int) (Math.random() * size);
-			}while(sudoku[_x][_y] != 0);
-			List<Integer> test = generate();
-			for(int value = 0; value < size;value++) {
-				x = _x;
-				y = _y;
-				if(!insert(test.get(value))) {
-					if(fillBoard(count+1))
-						sudoku[_x][_y] = 0;
-					else {
-						preFilled[_x][_y] = true;
-						return false;
-					}
-				}
-			}
+				x = (int) (Math.random() * size);
+				y = (int) (Math.random() * size);
+			}while(sudoku[x][y] == 0);
+			preFilled[x][y] = true;
 		}
+		removeNotFilled();
+	}
+	
+	/** Removes sudoku items not in pre filled*/
+	private void removeNotFilled() {
+		for(x = 0;x < size;x++)
+			for(y = 0;y < size;y++)
+				if(!preFilled[x][y])
+					sudoku[x][y] = 0;
+	}
+
+	/* Checks if current sudoku board is solvable
+	 * @return true if solvable
+	 * */
+	public boolean check() {
+		int[][] temp = sAlgorithm.solve(this);
+		if(temp != null) {return true;}
 		return false;
 	}
-
-	private List<Integer> generate(){
-		List<Integer> test = new ArrayList<>();
-		for(int i = 1; i <= size;i++) {
-			test.add(i);
+	
+	/*
+	 * @return false if couldn't solve
+	 */
+	public boolean tryToSolve() {
+		int[][] temp = sAlgorithm.solve(this);
+		if(temp != null) {
+			sudoku = temp;
+			return true;
 		}
-		Collections.shuffle(test);
-		return test;
-	}
-
-	public void tryToSolve() {
-		sudoku =  sAlgorithm.solve(this).getArray();
+		return false;
 	}
 	
 	/** Checks if the sudoku board has been solved.

@@ -6,41 +6,38 @@ public interface Solver {
 	 * 
 	 * @return returns whether the board was solved or not.
 	 */
-	Board solve(Board b);
+	int[][] solve(Board b);
 }
 
 class S_Algorithm implements Solver{
 	
-	private Board b;
+	private Board board;
 	
 	private boolean solveRec() {
-		int[][] sudoku = b.getArray();
-		for(int x = 0; x < b.size; x++) {
-			for(int y = 0; y < b.size; y++) {
+		int[][] sudoku = board.getArray();
+		for(int x = 0; x < board.size; x++)
+			for(int y = 0; y < board.size; y++)
 				if(sudoku[x][y] == 0) {
-					for(int i = 0; i < b.size; i++) {
-						int value = (int) (Math.random() * b.size + 1);
-						b.setX(x);
-						b.setY(y);
-						if(!b.insert(value)) {
+					for(int i = 0; i < board.size; i++) {
+						int value = (int) (Math.random() * board.size + 1);
+						board.setX(x);
+						board.setY(y);
+						if(!board.insert(value)) {
 							sudoku[x][y] = value;
-							if(solveRec()) {
+							if(solveRec())
 								return true;
-							} else {
+							else
 								sudoku[x][y] = 0;
-							}
 						}
 					}
 					return false;
 				}
-			}
-		}
 		return true;
 }
 	
-	public Board solve(Board b) {
-		this.b = b;
-		solveRec();
-		return this.b;
+	public int[][] solve(Board b) {
+		board = b;
+		boolean solvable = solveRec();
+		return solvable?board.getArray():null;
 	}
 }
