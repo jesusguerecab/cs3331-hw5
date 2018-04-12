@@ -151,6 +151,7 @@ public class SudokuDialog extends JFrame {
 	    btn.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent ev) {
 		    	boolean solvable = board.check();
+		    	showMessage(solvable?"Solvable":"Not Solvable");
 		    }
 		});
 	    btn.setToolTipText("Check");
