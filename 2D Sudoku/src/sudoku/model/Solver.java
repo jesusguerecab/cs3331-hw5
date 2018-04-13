@@ -27,7 +27,7 @@ class S_Algorithm implements Solver{
 						int value = (int) (Math.random() * board.size + 1);
 						board.setX(x);
 						board.setY(y);
-						if(board.insert(value)) {
+						if(board.insert(value, 1)) {
 							sudoku[x][y] = value;
 							if(solveRec())
 								return true;
@@ -48,7 +48,7 @@ class S_Algorithm implements Solver{
 	 */
 	public int[][] solve(Board b) {
 		board = b;
-		board.makeSudokuCopy();
+		//board.makeSudokuCopy();
 		boolean solvable = solveRec();
 		return solvable?board.getArray():null;
 	}

@@ -89,7 +89,7 @@ public class SudokuDialog extends JFrame {
 	 */
 	private void numberClicked(int number) {
 		if(number <= board.size) {
-			if(!board.insert(number))
+			if(!board.insert(number, 1))
 				playSound("Wrong.wav", "Conflicting number.");
 			if(board.isSolved())
 				playSound("Fiesta.wav", "Solved!");
@@ -123,7 +123,8 @@ public class SudokuDialog extends JFrame {
 		newGameItem = new JMenuItem("Check");
 		newGameItem.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent ev) {
-		    	boolean solvable = board.check();
+		    	board.makeSudokuCopy();
+		    	boolean solvable = board.isSolvable();
 				showMessage("");
 		    }
 		});
@@ -166,7 +167,8 @@ public class SudokuDialog extends JFrame {
 	    btn = new JButton(createImageIcon("check.png"));
 	    btn.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent ev) {
-		    	boolean solvable = board.check();
+		    	board.makeSudokuCopy();
+		    	boolean solvable = board.isSolvable();
 		    	showMessage(solvable?"Solvable":"Not Solvable");
 		    }
 		});

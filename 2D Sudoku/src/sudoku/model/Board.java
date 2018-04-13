@@ -8,6 +8,7 @@ public class Board {
 
 	private int[][] sudoku;
 	private boolean[][] preFilled;
+	private int[][] copy;
 
 	/**currently selected board square*/
 	private int x, y;
@@ -37,13 +38,34 @@ public class Board {
 	public int[][] getArray() {
 		return sudoku;
 	}
-	
+
 	public int[][] makeSudokuCopy(){
-		int[][] arr = new int[size][size];
+		copy = new int[size][size];
 		for(int _x = 0;_x < size;_x++)
 			for(int _y = 0;_y < size;_y++)
-				arr[_x][_y] = sudoku[_x][_y];
-		return arr;
+				copy[_x][_y] = sudoku[_x][_y];
+		return copy;
+	}
+
+	public boolean isSolvable() {
+		for(int x = 0; x < size; x++)
+			for(int y = 0; y < size; y++)
+				if(copy[x][y] == 0) {
+					for(int i = 0; i < size; i++) {
+						int value = (int) (Math.random() * size + 1);
+						setX(x);
+						setY(y);
+						if(insert(value, 2)) {
+							copy[x][y] = value;
+							if(isSolvable())
+								return true;
+							else
+								copy[x][y] = 0;
+						}
+					}
+					return false;
+				}
+		return true;
 	}
 
 	/** Creates an empty array with the given size of the board. */
@@ -80,7 +102,7 @@ public class Board {
 					sudoku[x][y] = 0;
 	}
 
-	/* Checks if current sudoku board is solvable
+	/** Checks if current sudoku board is solvable
 	 * @return true if solvable
 	 * */
 	public boolean check() {
@@ -176,23 +198,23 @@ public class Board {
 	public boolean isPrefilled() {
 		return preFilled[x][y];
 	}
-	
-	/** 
-	public char keyForCell() {
-		
-	}
 
 	/** Checks if there's an error with inserting the value, if none would insert value.
 	 * 
 	 * @param number used to store the actual value of the new number.
 	 * @return would return true if number wasn't allowed at position (x,y)
 	 */
-	public boolean insert(int number) {
+	public boolean insert(int number, int option) {
 		boolean can = canInsert(number);
-		if(can) {sudoku[x][y] = number;}
+		if(can) {
+			if(option == 1)
+				sudoku[x][y] = number;
+			else
+				copy[x][y] = number;
+		}
 		return can;
 	}
-	
+
 	/** Checks if there's an error with inserting the value
 	 * 
 	 * @param number used to store the actual value of the new number.
