@@ -80,6 +80,7 @@ public class SudokuDialog extends JFrame {
 		boardPanel.selectRect(x, y);
 		//showMessage(String.format("DEBUG: Board clicked: x = %d, y = %d",  x, y));
 		boardPanel.repaint();
+		showMessage("");
 	}
 
 	/**
@@ -88,7 +89,7 @@ public class SudokuDialog extends JFrame {
 	 */
 	private void numberClicked(int number) {
 		if(number <= board.size) {
-			if(board.insert(number))
+			if(!board.insert(number))
 				playSound("Wrong.wav", "Conflicting number.");
 			if(board.isSolved())
 				playSound("Fiesta.wav", "Solved!");
@@ -96,6 +97,7 @@ public class SudokuDialog extends JFrame {
 		else
 			playSound("Wrong.wav", "Invalid number.");
 		boardPanel.repaint();
+		showMessage("");
 	}
 	
 	
@@ -113,6 +115,7 @@ public class SudokuDialog extends JFrame {
 		newGameItem.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent ev) {
 		    	requestNewBoard();
+				showMessage("");
 		    }
 		});
 		menu.add(newGameItem);
@@ -121,6 +124,7 @@ public class SudokuDialog extends JFrame {
 		newGameItem.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent ev) {
 		    	boolean solvable = board.check();
+				showMessage("");
 		    }
 		});
 		menu.add(newGameItem);
@@ -130,6 +134,7 @@ public class SudokuDialog extends JFrame {
 		    public void actionPerformed(ActionEvent ev) {
 		    	board.tryToSolve();
 		    	boardPanel.repaint();
+				showMessage("");
 		    }
 		});
 		menu.add(newGameItem);
@@ -151,6 +156,7 @@ public class SudokuDialog extends JFrame {
 	    btn.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent ev) {
 		    	requestNewBoard();
+				showMessage("");
 		    }
 		});
 	    btn.setToolTipText("Play a new game");
@@ -173,6 +179,7 @@ public class SudokuDialog extends JFrame {
 		    public void actionPerformed(ActionEvent ev) {
 		    	board.tryToSolve();
 		    	boardPanel.repaint();
+				showMessage("");
 		    }
 		});
 	    btn.setToolTipText("Solve");
@@ -239,6 +246,7 @@ public class SudokuDialog extends JFrame {
 		menuBar.add(menu);
 		
 	    JToolBar toolBar = initToolBar();
+		toolBar.setAlignmentX(LEFT_ALIGNMENT);
 		
 		// buttons labeled 1, 2, ..., 9, and X.
 		JPanel numberButtons = new JPanel(new FlowLayout());

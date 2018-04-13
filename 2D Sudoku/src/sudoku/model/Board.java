@@ -19,8 +19,6 @@ public class Board {
 	public Board(int size) {
 		this.size = size;
 		createBoard();
-		x = y = 0;
-		x = y = -1;
 		sAlgorithm = new S_Algorithm();
 		partialFill();
 	}
@@ -38,6 +36,14 @@ public class Board {
 	/**  Return the array of this board. */
 	public int[][] getArray() {
 		return sudoku;
+	}
+	
+	public int[][] makeSudokuCopy(){
+		int[][] arr = new int[size][size];
+		for(int _x = 0;_x < size;_x++)
+			for(int _y = 0;_y < size;_y++)
+				arr[_x][_y] = sudoku[_x][_y];
+		return arr;
 	}
 
 	/** Creates an empty array with the given size of the board. */
@@ -170,6 +176,11 @@ public class Board {
 	public boolean isPrefilled() {
 		return preFilled[x][y];
 	}
+	
+	/** 
+	public char keyForCell() {
+		
+	}
 
 	/** Checks if there's an error with inserting the value, if none would insert value.
 	 * 
@@ -177,14 +188,24 @@ public class Board {
 	 * @return would return true if number wasn't allowed at position (x,y)
 	 */
 	public boolean insert(int number) {
+		boolean can = canInsert(number);
+		if(can) {sudoku[x][y] = number;}
+		return can;
+	}
+	
+	/** Checks if there's an error with inserting the value
+	 * 
+	 * @param number used to store the actual value of the new number.
+	 * @return would return true if number wasn't allowed at position (x,y)
+	 */
+	private boolean canInsert(int number) {
 		if(x == -1 || y == -1) return false;
 		if(isPrefilled()) 
-			return true;
+			return false;
 		if(number != 0)
 			if(repeatsOnSquare(number) || repeatsColumnRow(number))
-				return true;
-		sudoku[x][y] = number;
-		return false;
+				return false;
+		return true;
 	}
 
 	/** Getters and Setters*/ 
