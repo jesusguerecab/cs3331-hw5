@@ -1,5 +1,7 @@
 package sudoku.model;
 
+import java.util.ArrayList;
+
 /** An abstraction of Sudoku puzzle. */
 public class Board {
 
@@ -220,7 +222,7 @@ public class Board {
 	 * @param number used to store the actual value of the new number.
 	 * @return would return true if number wasn't allowed at position (x,y)
 	 */
-	private boolean canInsert(int number) {
+	public boolean canInsert(int number) {
 		if(x == -1 || y == -1) return false;
 		if(isPrefilled()) 
 			return false;

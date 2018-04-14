@@ -1,6 +1,7 @@
 package sudoku.dialog;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -53,6 +54,9 @@ public class SudokuDialog extends JFrame {
 	/** Message bar to display various messages. */
 	private JLabel msgBar = new JLabel("");
 	
+	/** Panel that displays number buttons */
+	private JPanel numberButtons;
+	
 	/** Create a new dialog. */
 	public SudokuDialog() {
 		this(DEFAULT_SIZE);
@@ -77,12 +81,32 @@ public class SudokuDialog extends JFrame {
 	 * @param y 0-based column index of the clicked square.
 	 */
 	private void boardClicked(int x, int y) {
+		resetButtons();
 		boardPanel.selectRect(x, y);
 		//showMessage(String.format("DEBUG: Board clicked: x = %d, y = %d",  x, y));
 		boardPanel.repaint();
 		showMessage("");
+		diableButtons();
 	}
 
+	/** Disables Buttons that cannot be inserted in current cell*/
+	private void diableButtons() {
+		for(int i = 1;i <= board.size;i++)
+			if(!board.canInsert(i))
+				numberButtons.getComponent(i-1).setEnabled(false);
+		numberButtons.repaint();
+	}
+	
+	/** Re-enables all number buttons */
+	private void resetButtons() {
+		int count = 0;
+		for(Component button : numberButtons.getComponents())
+			if(count++ < board.size)
+				button.setEnabled(true);
+			else
+				button.setEnabled(false);
+	}
+	
 	/**
 	 * Callback to be invoked when a number button is clicked.
 	 * @param number Clicked number (1-9), or 0 for "X".
@@ -198,11 +222,13 @@ public class SudokuDialog extends JFrame {
 	        null, options, options[0]);
 	   switch(response) {
 	   case 0:
+			resetButtons();
 			board = new Board(4);
 			boardPanel.setBoard(board);
 			boardPanel.repaint();
 			break;
 	   case 1:
+			resetButtons();
 		   board = new Board(9);
 			boardPanel.setBoard(board);
 			boardPanel.repaint();
@@ -251,7 +277,7 @@ public class SudokuDialog extends JFrame {
 		toolBar.setAlignmentX(LEFT_ALIGNMENT);
 		
 		// buttons labeled 1, 2, ..., 9, and X.
-		JPanel numberButtons = new JPanel(new FlowLayout());
+		numberButtons = new JPanel(new FlowLayout());
 		int maxNumber = board.size() + 1;
 		for (int i = 1; i <= maxNumber; i++) {
 			int number = i % maxNumber;
