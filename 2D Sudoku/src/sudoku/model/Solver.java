@@ -48,7 +48,6 @@ class S_Algorithm implements Solver{
 	 */
 	public int[][] solve(Board b) {
 		board = b;
-		//board.makeSudokuCopy();
 		boolean solvable = solveRec();
 		return solvable?board.getArray():null;
 	}

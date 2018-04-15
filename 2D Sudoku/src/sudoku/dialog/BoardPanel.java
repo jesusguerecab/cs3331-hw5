@@ -20,7 +20,7 @@ import sudoku.model.Board;
  */
 @SuppressWarnings("serial")
 public class BoardPanel extends JPanel {
-	
+
 	public interface ClickListener {
 
 		/** Callback to notify clicking of a square. 
@@ -32,9 +32,9 @@ public class BoardPanel extends JPanel {
 		void clicked(int x, int y);
 	}
 
-    /** Background color of the board. */
+	/** Background color of the board. */
 	private static final Color boardColor = new Color(175, 250, 250);
-	
+
 	/** Color of selected square. */
 	private static final Color squareColor = new Color(250, 175, 175);
 
@@ -56,63 +56,63 @@ public class BoardPanel extends JPanel {
 			}
 		});
 	}
-	
-    /** Set the board to be displayed. */
-    public void setBoard(Board board) {
-    	this.board = board;
-    }
-    
-    /**
-     * Given a screen coordinate, return the indexes of the corresponding square
-     * or -1 if there is no square.
-     * The indexes are encoded and returned as x*100 + y, 
-     * where x and y are 0-based column/row indexes.
-     */
-    private int locateSquaree(int x, int y) {
-    	if (x < 0 || x > board.size * squareSize
-    			|| y < 0 || y > board.size * squareSize) {
-    		return -1;
-    	}
-    	int xx = x / squareSize;
-    	int yy = y / squareSize;
-    	return xx * 100 + yy;
-    }
-    
-    /** Column Index of square to be highlighted*/
-    private Integer x = -1;
-    
-    /** Row Index of square to be highlighted*/
-    private Integer y = -1;
-    
-    /** Given a screen coordinate, updates/initializes private values*/
-    public void selectRect(int x, int y) {
-    	if(this.x == x && this.y == y) {
-    		this.x = this.y = -1;
-    		board.setX(-1);
-    		board.setY(-1);
-    		board.clearPos();
-    	}
-    	else {
-    		this.x = x;
+
+	/** Set the board to be displayed. */
+	public void setBoard(Board board) {
+		this.board = board;
+	}
+
+	/**
+	 * Given a screen coordinate, return the indexes of the corresponding square
+	 * or -1 if there is no square.
+	 * The indexes are encoded and returned as x*100 + y, 
+	 * where x and y are 0-based column/row indexes.
+	 */
+	private int locateSquaree(int x, int y) {
+		if (x < 0 || x > board.size * squareSize
+				|| y < 0 || y > board.size * squareSize) {
+			return -1;
+		}
+		int xx = x / squareSize;
+		int yy = y / squareSize;
+		return xx * 100 + yy;
+	}
+
+	/** Column Index of square to be highlighted*/
+	private Integer x = -1;
+
+	/** Row Index of square to be highlighted*/
+	private Integer y = -1;
+
+	/** Given a screen coordinate, updates/initializes private values*/
+	public void selectRect(int x, int y) {
+		if(this.x == x && this.y == y) {
+			this.x = this.y = -1;
+			board.setX(-1);
+			board.setY(-1);
+			board.clearPos();
+		}
+		else {
+			this.x = x;
 			this.y = y;
 
 			board.setX(x);
 			board.setY(y);
-    	}
-    }
-    
+		}
+	}
+
 	/** Updates board with values*/
 	public void updateValues(Graphics g) {
 		int[][] sudoku = board.getArray();
-        g.setColor(Color.BLACK);
+		g.setColor(Color.BLACK);
 		int centerX = (board.size==9)?12:30;
 		int centerY = (board.size==9)?20:40;
-        for(int i = 0;i < board.size;i++)
-            for(int j = 0;j < board.size;j++)
-            	if(sudoku[i][j] != 0)
-            		g.drawString(String.valueOf(sudoku[i][j]), i * squareSize + centerX, j * squareSize + centerY);
+		for(int i = 0;i < board.size;i++)
+			for(int j = 0;j < board.size;j++)
+				if(sudoku[i][j] != 0)
+					g.drawString(String.valueOf(sudoku[i][j]), i * squareSize + centerX, j * squareSize + centerY);
 	}
-    
+
 	/** Darkens Pre-Filled cells*/
 	public void darkenPreFill(Graphics g) {
 		boolean[][] preFilled = board.getPreFill();
@@ -122,22 +122,22 @@ public class BoardPanel extends JPanel {
 				if(preFilled[row][column])
 					g.fillRect(row * squareSize + 2, column * squareSize + 2, squareSize - 3, squareSize - 3);
 	}
-	
-    /** Draws the lines that separate the squares on the board*/
-    private void drawGridLines(Graphics g) {
-    	int sqrtSize = (int) Math.sqrt(board.size);
-        g.setColor(Color.GRAY);
-        for(int i = 0;i < board.size;i++) {
-            g.fillRect(i*squareSize, 0, 1, board.size * squareSize);
-            g.fillRect(0, i*squareSize, board.size * squareSize, 1);
-        }
-        for(int i = 0;i < board.size;i++) {
-	        g.setColor(Color.BLACK);
-	        g.fillRect(sqrtSize*i*squareSize, 0, 1, board.size * squareSize);
-	        g.fillRect(0, sqrtSize*i*squareSize, board.size * squareSize, 1);
-        }
-    }
-    
+
+	/** Draws the lines that separate the squares on the board*/
+	private void drawGridLines(Graphics g) {
+		int sqrtSize = (int) Math.sqrt(board.size);
+		g.setColor(Color.GRAY);
+		for(int i = 0;i < board.size;i++) {
+			g.fillRect(i*squareSize, 0, 1, board.size * squareSize);
+			g.fillRect(0, i*squareSize, board.size * squareSize, 1);
+		}
+		for(int i = 0;i < board.size;i++) {
+			g.setColor(Color.BLACK);
+			g.fillRect(sqrtSize*i*squareSize, 0, 1, board.size * squareSize);
+			g.fillRect(0, sqrtSize*i*squareSize, board.size * squareSize, 1);
+		}
+	}
+
 	/** Draw the associated board. */
 	@Override
 	public void paint(Graphics g) {
@@ -148,14 +148,14 @@ public class BoardPanel extends JPanel {
 		squareSize = Math.min(dim.width, dim.height) / board.size;
 
 		// draw background
-        g.setColor(boardColor);
-        g.fillRect(0, 0, squareSize * board.size, squareSize * board.size);
-        if(x != -1 && y != -1) {
-	        g.setColor(squareColor);
-	        g.fillRect(x * squareSize + 2, y * squareSize + 2, squareSize - 3, squareSize - 3);
-        }
-        drawGridLines(g);
-        darkenPreFill(g);
-        updateValues(g);
-    }
+		g.setColor(boardColor);
+		g.fillRect(0, 0, squareSize * board.size, squareSize * board.size);
+		if(x != -1 && y != -1) {
+			g.setColor(squareColor);
+			g.fillRect(x * squareSize + 2, y * squareSize + 2, squareSize - 3, squareSize - 3);
+		}
+		drawGridLines(g);
+		darkenPreFill(g);
+		updateValues(g);
+	}
 }

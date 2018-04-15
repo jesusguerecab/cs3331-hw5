@@ -1,7 +1,5 @@
 package sudoku.model;
 
-import java.util.ArrayList;
-
 /** An abstraction of Sudoku puzzle. */
 public class Board {
 
@@ -41,6 +39,7 @@ public class Board {
 		return sudoku;
 	}
 
+	/** Creates and returns a copy of the sudoku array. */
 	public int[][] makeSudokuCopy(){
 		copy = new int[size][size];
 		for(int _x = 0;_x < size;_x++)
@@ -49,6 +48,11 @@ public class Board {
 		return copy;
 	}
 
+	/** 
+	 * Solves a sudoku work by applying backtracking to a copy of current sudoku board values.
+	 * 
+	 * @return Returns whether a sudoku board is solvable or not.
+	 */
 	public boolean isSolvable() {
 		for(int x = 0; x < size; x++)
 			for(int y = 0; y < size; y++)
@@ -82,7 +86,7 @@ public class Board {
 		}
 	}
 
-	/** partially fills board according to its size.*/
+	/** Partially fills board according to its size.*/
 	private void partialFill() {
 		int amount = (size == 9) ?  23 : 8;
 		tryToSolve();
