@@ -99,12 +99,13 @@ public class SudokuDialog extends JFrame {
 
 	/** Re-enables all number buttons */
 	private void resetButtons() {
+		Component[] buttons = numberButtons.getComponents();
 		int count = 0;
-		for(Component button : numberButtons.getComponents())
+		for(int i = 1;i <= board.size;i++)
 			if(count++ < board.size)
-				button.setEnabled(true);
+				buttons[i].setEnabled(true);
 			else
-				button.setEnabled(false);
+				buttons[i].setEnabled(false);
 	}
 
 	/**
@@ -149,7 +150,7 @@ public class SudokuDialog extends JFrame {
 			public void actionPerformed(ActionEvent ev) {
 				board.makeSudokuCopy();
 				boolean solvable = board.isSolvable();
-				showMessage("");
+				showMessage(solvable?"Solvable":"Not Solvable");
 			}
 		});
 		menu.add(newGameItem);
