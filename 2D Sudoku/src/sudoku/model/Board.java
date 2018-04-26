@@ -16,6 +16,22 @@ public class Board {
 	/** Algorithm used to try and solve sudoku*/
 	public Solver sAlgorithm;
 
+	public Board(int size, int[] in) {
+		int n;
+		this.size = size;
+		createBoard();
+		sAlgorithm = new S_Algorithm();
+		for(int i = 0;i < in.length;i+=3) {
+			x = in[i];
+			y = in[i+1];
+			n = in[i+2];
+			
+			sudoku[x][y] = n;
+			preFilled[x][y] = true;
+		}
+			
+	}
+	
 	/** Create a new board of the given size. */
 	public Board(int size) {
 		this.size = size;
@@ -204,7 +220,7 @@ public class Board {
 	public boolean isPrefilled() {
 		return preFilled[x][y];
 	}
-
+	
 	/** Checks if there's an error with inserting the value, if none would insert value.
 	 * 
 	 * @param number used to store the actual value of the new number.
@@ -219,6 +235,12 @@ public class Board {
 				copy[x][y] = number;
 		}
 		return can;
+	}
+	
+	public boolean insert(int x, int y, int n) {
+		this.x = x;
+		this.y = y;
+		return insert(n,1);
 	}
 
 	/** Checks if there's an error with inserting the value

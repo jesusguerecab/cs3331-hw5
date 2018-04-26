@@ -46,10 +46,10 @@ public class SudokuDialog extends JFrame {
 	private final static String IMAGE_DIR = "/image/";
 
 	/** Sudoku board. */
-	private Board board;
+	protected Board board;
 
 	/** Special panel to display a Sudoku board. */
-	private BoardPanel boardPanel;
+	protected BoardPanel boardPanel;
 
 	/** Message bar to display various messages. */
 	private JLabel msgBar = new JLabel("");
@@ -112,7 +112,7 @@ public class SudokuDialog extends JFrame {
 	 * Callback to be invoked when a number button is clicked.
 	 * @param number Clicked number (1-9), or 0 for "X".
 	 */
-	private void numberClicked(int number) {
+	protected void numberClicked(int number) {
 		if(number <= board.size) {
 			if(!board.insert(number, 1))
 				playSound("Wrong.wav", "Conflicting number.");
@@ -174,7 +174,7 @@ public class SudokuDialog extends JFrame {
 	 * 
 	 * @return JToolBar return tool bal with icons.
 	 */
-	private JToolBar initToolBar() {
+	protected JToolBar initToolBar() {
 		JToolBar toolBar = new JToolBar("Sudoku");
 
 		//new game button
@@ -299,7 +299,7 @@ public class SudokuDialog extends JFrame {
 	}
 
 	/** Create an image icon from the given image file. */
-	private ImageIcon createImageIcon(String filename) {
+	protected ImageIcon createImageIcon(String filename) {
 		URL imageUrl = getClass().getResource(IMAGE_DIR + filename);
 		if (imageUrl != null) {
 			return new ImageIcon(imageUrl);
