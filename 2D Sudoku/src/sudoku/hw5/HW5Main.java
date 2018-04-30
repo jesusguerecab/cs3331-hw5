@@ -82,7 +82,6 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 			 board = new Board(x,others);
 			 //boardPanel.setBoard(board);
 			 break;
-			 
 		 }
 		 boardPanel.repaint();
 	 }
