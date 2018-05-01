@@ -5,8 +5,11 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -27,7 +30,11 @@ import sudoku.model.Board;
 
 public class HW5Main extends SudokuDialog implements MessageListener{
 
-
+	JTextArea peerHostName;
+	JTextArea peerPortNumber;
+	ServerSocket server;
+	Socket socket;
+	
 	public HW5Main() {
 		super();
 	}
@@ -51,15 +58,17 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 	}
 
 	private void networkButtonClicked(ActionEvent e) { 
-				Socket socket = new Socket();
-				//socket.connect(new InetSocketAddress("127.0.0.1", 8000), 5000); // timeout in millis
+			try {
+				socket = new Socket();
+				server = new ServerSocket(0);
+				JFrame networkPanel = networkPanel(socket);new Thread(()-> {
+  					try {
+  						pairAsServer();
+  					} catch (Exception a) { }
+  				}).start();
+			} catch (Exception e1) {
 				
-				try {
-					JFrame networkPanel = networkPanel(socket);
-				} catch (UnknownHostException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+			}
 	}
 	
 	private JFrame networkPanel(Socket socket) throws UnknownHostException {
@@ -78,7 +87,7 @@ public class HW5Main extends SudokuDialog implements MessageListener{
         playerPanel.add(new JLabel("IP number:"));
         playerPanel.add(newTxtField(hostInfo[1]));
         playerPanel.add(new JLabel("Port number:"));
-        playerPanel.add(newTxtField(Integer.toString(socket.getLocalPort())));
+        playerPanel.add(newTxtField(Integer.toString(server.getLocalPort())));
         panel.add(playerPanel);
         
         //Peer sub-panel
@@ -87,11 +96,11 @@ public class HW5Main extends SudokuDialog implements MessageListener{
         
 
         peerPanel.add(new JLabel("Host name/IP:"));
-        JTextArea peerHostName = newTxtField(null);
+        peerHostName = newTxtField(null);
         peerHostName.setText("127.0.0.1"); 
         peerPanel.add(peerHostName);
         peerPanel.add(new JLabel("Port number:"));
-        JTextArea peerPortNumber = newTxtField(null);
+        peerPortNumber = newTxtField(null);
         peerPortNumber.setText("8000"); 
         peerPanel.add(peerPortNumber);
         JButton connect = new JButton("Connect");
@@ -101,14 +110,19 @@ public class HW5Main extends SudokuDialog implements MessageListener{
         		  new Thread(()-> {
   					try {
   						socket.connect(new InetSocketAddress(peerHostName.getText(), Integer.parseInt(peerPortNumber.getText())), 5000);
-  						pairAsClient(socket);
+  						pairAsClient();
   					} catch (Exception a) { }
   				}).start();
         	  } 
         } );
         disconnect.addActionListener(new ActionListener() { 
         		  public void actionPerformed(ActionEvent e) { 
-        			  
+        			  	network.close();
+        			  	try {
+							socket.close();
+						} catch (IOException e1) {
+							
+						}
         			  } 
         			} );
         peerPanel.add(connect);
@@ -133,17 +147,24 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 		return txtField;
 	}
 	
-	private void pairAsClient(Socket socket) {
+	private void pairAsClient() {
 		network = new NetworkAdapter(socket);
 		network.setMessageListener(this); // see the next slide
 		network.writeJoin();
 		network.receiveMessages(); // loop till disconnected
 	}
 
-	private void pairAsServer(Socket socket) {
-		   network = new NetworkAdapter(socket);
-		   network.setMessageListener(this); 
-		   network.receiveMessages();
+	private void pairAsServer() {
+		System.out.println("ayy");
+		network = new NetworkAdapter(socket);
+		try {
+			socket = server.accept();
+		} catch (IOException e) {
+		}
+		network.setMessageListener(this); 
+		int[] sudoku = {1,9,0,2,4,1,0,3,6,1,0,4,7,1,0,6,5,1,1,0,8,1,1,2,6,1,1,3,9,1,1,6,3,1,1,8,2,1,2,0,9,1,2,1,7,1,2,5,3,1,2,8,6,1,3,1,5,1,3,3,2,1,3,6,1,1,3,7,8,1,3,8,7,1,4,1,8,1,4,3,7,1,4,4,6,1,4,5,1,1,4,7,9,1,5,0,1,1,5,1,4,1,5,5,9,1,5,7,6,1,6,0,7,1,6,1,9,1,6,4,1,1,6,8,4,1,7,0,5,1,7,2,1,1,7,3,4,1,7,6,7,1,7,8,8,1,8,2,3,1,8,4,5,1,8,5,7,1,8,6,9,1};
+		network.writeJoinAck(9, sudoku);
+		network.receiveMessages();
 	}
 
 	private NetworkAdapter network;
@@ -169,6 +190,9 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 			board = new Board(x,others);
 			//boardPanel.setBoard(board);
 			break;
+		case JOIN:
+			int[] sudoku = {1,9,0,2,4,1,0,3,6,1,0,4,7,1,0,6,5,1,1,0,8,1,1,2,6,1,1,3,9,1,1,6,3,1,1,8,2,1,2,0,9,1,2,1,7,1,2,5,3,1,2,8,6,1,3,1,5,1,3,3,2,1,3,6,1,1,3,7,8,1,3,8,7,1,4,1,8,1,4,3,7,1,4,4,6,1,4,5,1,1,4,7,9,1,5,0,1,1,5,1,4,1,5,5,9,1,5,7,6,1,6,0,7,1,6,1,9,1,6,4,1,1,6,8,4,1,7,0,5,1,7,2,1,1,7,3,4,1,7,6,7,1,7,8,8,1,8,2,3,1,8,4,5,1,8,5,7,1,8,6,9,1};
+			network.writeJoinAck(9, sudoku);
 		}
 		boardPanel.repaint();
 	}
