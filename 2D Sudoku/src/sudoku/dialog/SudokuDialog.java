@@ -164,6 +164,14 @@ public class SudokuDialog extends JFrame {
 			}
 		});
 		menu.add(newGameItem);
+		
+		newGameItem = new JMenuItem("Exit");
+		newGameItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ev) {
+				System.exit(0);
+			}
+		});
+		menu.add(newGameItem);
 
 		return menu;
 	}

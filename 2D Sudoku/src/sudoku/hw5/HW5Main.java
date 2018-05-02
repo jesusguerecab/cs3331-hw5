@@ -2,7 +2,10 @@ package sudoku.hw5;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -21,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 
 import sudoku.dialog.SudokuDialog;
@@ -32,9 +36,10 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 
 	JTextArea peerHostName;
 	JTextArea peerPortNumber;
+	JTextArea consolePanel;
 	ServerSocket server;
 	Socket socket;
-	
+
 	public HW5Main() {
 		super();
 	}
@@ -61,6 +66,7 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 		try {
 			socket = new Socket();
 			server = new ServerSocket(0);
+<<<<<<< HEAD
 			JFrame networkPanel = networkPanel(socket);
 			System.out.println(InetAddress.getLocalHost().getHostAddress());
 			new Thread(() -> { 
@@ -71,15 +77,25 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 				}).start();
 		} catch (Exception e1) {
 			
+=======
+			JFrame networkPanel = networkPanel(socket);new Thread(()-> {
+				try {
+					pairAsServer();
+				} catch (Exception a) { }
+			}).start();
+		} catch (Exception e1) {
+
+>>>>>>> refs/remotes/origin/master
 		}
 	}
-	
+
 	private JFrame networkPanel(Socket socket) throws UnknownHostException {
-        JFrame frame = new JFrame("Network");
+		JFrame frame = new JFrame("Network");
 
-        JPanel panel = new JPanel(new GridLayout(4,1));
-        panel.setPreferredSize(new Dimension(300, 400));
+		JPanel panel = new JPanel(new GridLayout(4,1));
+		panel.setPreferredSize(new Dimension(300, 400));
 
+<<<<<<< HEAD
         //Player sub-panel
         final JPanel playerPanel = new JPanel(new GridLayout(3,2));
         playerPanel.setBorder(new TitledBorder("Player"));
@@ -97,7 +113,22 @@ public class HW5Main extends SudokuDialog implements MessageListener{
         JPanel peerPanel = new JPanel(new GridLayout(3,2));
         peerPanel.setBorder(new TitledBorder("Peer"));
         
+=======
+		//Player sub-panel
+		final JPanel playerPanel = new JPanel(new GridLayout(3,2));
+		playerPanel.setBorder(new TitledBorder("Player"));
 
+		String[] hostInfo = InetAddress.getLocalHost().toString().split("/");
+		playerPanel.add(new JLabel("Host name:"));
+		playerPanel.add(newTxtField(hostInfo[0]));
+		playerPanel.add(new JLabel("IP number:"));
+		playerPanel.add(newTxtField(hostInfo[1]));
+		playerPanel.add(new JLabel("Port number:"));
+		playerPanel.add(newTxtField(Integer.toString(server.getLocalPort())));
+		panel.add(playerPanel);
+>>>>>>> refs/remotes/origin/master
+
+<<<<<<< HEAD
         peerPanel.add(new JLabel("Host name/IP:"));
         peerHostName = newTxtField(null);
         peerHostName.setText("127.0.0.1"); 
@@ -137,21 +168,93 @@ public class HW5Main extends SudokuDialog implements MessageListener{
         String[] options = new String[] {"Cancel"};
         frame.add(panel);
         frame.setSize(300, 400);
+=======
+		//Peer sub-panel
+		JPanel peerPanel = new JPanel(new GridLayout(3,2));
+		peerPanel.setBorder(new TitledBorder("Peer"));
+		
+		//Bottom Panel
+		JPanel botPanel = new JPanel(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+
+
+		peerPanel.add(new JLabel("Host name/IP:"));
+		peerHostName = newTxtField(null);
+		peerHostName.setText("127.0.0.1"); 
+		peerPanel.add(peerHostName);
+		peerPanel.add(new JLabel("Port number:"));
+		peerPortNumber = newTxtField(null);
+		peerPortNumber.setText("8000"); 
+		peerPanel.add(peerPortNumber);
+		JButton connect = new JButton("Connect");
+		JButton disconnect = new JButton("Disconnect");
+		consolePanel = newTxtField(" ");
+		JButton close = new JButton("Close");
+
+		connect.addActionListener(new ActionListener() { 
+			public void actionPerformed(ActionEvent e) { 
+				new Thread(()-> {
+					try {
+						socket.connect(new InetSocketAddress(peerHostName.getText(), Integer.parseInt(peerPortNumber.getText())), 5000);
+						pairAsClient();
+					} catch (Exception a) { }
+				}).start();
+			} 
+		} );
+		disconnect.addActionListener(new ActionListener() { 
+			public void actionPerformed(ActionEvent e) { 
+				network.close();
+				try {
+					socket.close();
+				} catch (IOException e1) {
+
+				}
+			} 
+		} );
+		peerPanel.add(connect);
+		peerPanel.add(disconnect);
+		close.addActionListener(new ActionListener() { 
+			public void actionPerformed(ActionEvent e) { 
+				Window win = SwingUtilities.getWindowAncestor(panel);
+				win.dispose();
+			} 
+		} );
+		panel.add(peerPanel);
+		panel.add(consolePanel);
+		
+		
+		c.fill = GridBagConstraints.LAST_LINE_END;
+		c.gridx = 5;
+		c.gridy = 2;
+		botPanel.add(close, c);
+		panel.add(botPanel);
+		//panel.add(close);
+
+		//Display
+		String[] options = new String[] {"Cancel"};
+		frame.add(panel);
+		frame.setSize(300, 400);
+>>>>>>> refs/remotes/origin/master
 		frame.setVisible(true);
-        return frame;
+		return frame;
 	}
-	
+
 	private JTextArea newTxtField(String str) {
 		JTextArea txtField = new JTextArea(1,10);
 		txtField.setBorder(BorderFactory.createLineBorder(Color.gray));
 		txtField.setSize(1, 1);
-        txtField.setText(str);
+		txtField.setText(str);
 		if(str!=null)
 			txtField.setEditable(false);
 		return txtField;
 	}
+<<<<<<< HEAD
 	
 	private void pairAsClient(Socket socket) {
+=======
+
+	private void pairAsClient() {
+>>>>>>> refs/remotes/origin/master
 		network = new NetworkAdapter(socket);
 		network.setMessageListener(this); // see the next slide
 		network.writeJoin();
