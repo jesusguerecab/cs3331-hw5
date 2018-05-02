@@ -32,6 +32,23 @@ public class Board {
 			
 	}
 	
+	public Board(int x,int size, int[] in) {
+		int n,f;
+		this.size = size;
+		createBoard();
+		sAlgorithm = new S_Algorithm();
+		for(int i = 0;i < in.length;i+=4) {
+			x = in[i];
+			y = in[i+1];
+			n = in[i+2];
+			f = in[i+3];
+			
+			sudoku[x][y] = n;
+			if(f==1)
+				preFilled[x][y] = true;
+		}
+	}
+	
 	/** Create a new board of the given size. */
 	public Board(int size) {
 		this.size = size;
