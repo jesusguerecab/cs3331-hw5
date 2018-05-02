@@ -67,7 +67,8 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 			socket = new Socket();
 			server = new ServerSocket(0);
 			
-			networkPanel(socket);
+			JFrame networkPanel = networkPanel(socket);
+			networkPanel.setVisible(true);
 			System.out.println(InetAddress.getLocalHost().getHostAddress());
 			new Thread(() -> { 
 				try {
@@ -80,15 +81,23 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 		}
 	}
 
-	private void networkPanel(Socket socket) throws UnknownHostException {
+	private JFrame networkPanel(Socket socket) throws UnknownHostException {
 		JFrame frame = new JFrame("Network");
 
 		JPanel panel = new JPanel(new GridLayout(4,1));
 		panel.setPreferredSize(new Dimension(300, 400));
 		
-		//Player sub-panel
-		final JPanel playerPanel = new JPanel(new GridLayout(3,2));
-		playerPanel.setBorder(new TitledBorder("Player"));
+        final JPanel playerPanel = new JPanel(new GridLayout(3,2));
+        playerPanel.setBorder(new TitledBorder("Player"));
+        
+        String[] hostInfo = InetAddress.getLocalHost().toString().split("/");
+        playerPanel.add(new JLabel("Host name:"));
+        playerPanel.add(newTxtField(hostInfo[0]));
+        playerPanel.add(new JLabel("IP number:"));
+        playerPanel.add(newTxtField(hostInfo[1]));
+        playerPanel.add(new JLabel("Port number:"));
+        playerPanel.add(newTxtField(Integer.toString(server.getLocalPort())));
+        panel.add(playerPanel);
         
         //Display
         String[] options = new String[] {"Cancel"};
@@ -155,6 +164,8 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 		botPanel.add(close, c);
 		panel.add(botPanel);
 		//panel.add(close);
+		
+		return frame;
 	}
 
 	private JTextArea newTxtField(String str) {
