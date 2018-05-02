@@ -334,8 +334,10 @@ public class NetworkAdapter {
         String line = null;
         try {
             while ((line = in.readLine()) != null) {
+                System.out.println("line");
                 if (logger != null) {
                     logger.format(" < %s\n", line);
+                    System.out.println(line);
                 }
                 parseMessage(line);
             }

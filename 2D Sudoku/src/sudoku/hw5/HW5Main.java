@@ -58,17 +58,20 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 	}
 
 	private void networkButtonClicked(ActionEvent e) { 
-			try {
-				socket = new Socket();
-				server = new ServerSocket(0);
-				JFrame networkPanel = networkPanel(socket);new Thread(()-> {
-  					try {
-  						pairAsServer();
-  					} catch (Exception a) { }
-  				}).start();
-			} catch (Exception e1) {
-				
-			}
+		try {
+			socket = new Socket();
+			server = new ServerSocket(0);
+			JFrame networkPanel = networkPanel(socket);
+			System.out.println(InetAddress.getLocalHost().getHostAddress());
+			new Thread(() -> { 
+				try {
+					Socket client = server.accept();
+					pairAsServer(client);
+				} catch(Exception a) { }
+				}).start();
+		} catch (Exception e1) {
+			
+		}
 	}
 	
 	private JFrame networkPanel(Socket socket) throws UnknownHostException {
@@ -80,7 +83,7 @@ public class HW5Main extends SudokuDialog implements MessageListener{
         //Player sub-panel
         final JPanel playerPanel = new JPanel(new GridLayout(3,2));
         playerPanel.setBorder(new TitledBorder("Player"));
-
+        
         String[] hostInfo = InetAddress.getLocalHost().toString().split("/");
         playerPanel.add(new JLabel("Host name:"));
         playerPanel.add(newTxtField(hostInfo[0]));
@@ -101,7 +104,7 @@ public class HW5Main extends SudokuDialog implements MessageListener{
         peerPanel.add(peerHostName);
         peerPanel.add(new JLabel("Port number:"));
         peerPortNumber = newTxtField(null);
-        peerPortNumber.setText("8000"); 
+        peerPortNumber.setText("8080"); 
         peerPanel.add(peerPortNumber);
         JButton connect = new JButton("Connect");
         JButton disconnect = new JButton("Disconnect");
@@ -110,7 +113,8 @@ public class HW5Main extends SudokuDialog implements MessageListener{
         		  new Thread(()-> {
   					try {
   						socket.connect(new InetSocketAddress(peerHostName.getText(), Integer.parseInt(peerPortNumber.getText())), 5000);
-  						pairAsClient();
+  						pairAsClient(socket);
+  						
   					} catch (Exception a) { }
   				}).start();
         	  } 
@@ -147,20 +151,15 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 		return txtField;
 	}
 	
-	private void pairAsClient() {
+	private void pairAsClient(Socket socket) {
 		network = new NetworkAdapter(socket);
 		network.setMessageListener(this); // see the next slide
 		network.writeJoin();
 		network.receiveMessages(); // loop till disconnected
 	}
 
-	private void pairAsServer() {
-		System.out.println("ayy");
-		network = new NetworkAdapter(socket);
-		try {
-			socket = server.accept();
-		} catch (IOException e) {
-		}
+	private void pairAsServer(Socket client) {
+		network = new NetworkAdapter(client);
 		network.setMessageListener(this); 
 		int[] sudoku = {1,9,0,2,4,1,0,3,6,1,0,4,7,1,0,6,5,1,1,0,8,1,1,2,6,1,1,3,9,1,1,6,3,1,1,8,2,1,2,0,9,1,2,1,7,1,2,5,3,1,2,8,6,1,3,1,5,1,3,3,2,1,3,6,1,1,3,7,8,1,3,8,7,1,4,1,8,1,4,3,7,1,4,4,6,1,4,5,1,1,4,7,9,1,5,0,1,1,5,1,4,1,5,5,9,1,5,7,6,1,6,0,7,1,6,1,9,1,6,4,1,1,6,8,4,1,7,0,5,1,7,2,1,1,7,3,4,1,7,6,7,1,7,8,8,1,8,2,3,1,8,4,5,1,8,5,7,1,8,6,9,1};
 		network.writeJoinAck(9, sudoku);
@@ -176,22 +175,22 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 
 	/** Called when a message is received from the peer. */
 	public void messageReceived(MessageType type, int x, int y, int z, int[] others) {
-		System.out.println(type.toString());
+		//System.out.println(type.toString());
 		switch (type) {
 		case FILL:
 			// peer filled the square (x, y) with the number z
 			board.insert(x, y, z);
 			break;
 		case JOIN_ACK:
-			//board = new Board(y,others);
-			//boardPanel.setBoard(board);
+			network.writeJoinAck();
 			break;
 		case NEW:
 			board = new Board(x,others);
 			//boardPanel.setBoard(board);
 			break;
 		case JOIN:
-			int[] sudoku = {1,9,0,2,4,1,0,3,6,1,0,4,7,1,0,6,5,1,1,0,8,1,1,2,6,1,1,3,9,1,1,6,3,1,1,8,2,1,2,0,9,1,2,1,7,1,2,5,3,1,2,8,6,1,3,1,5,1,3,3,2,1,3,6,1,1,3,7,8,1,3,8,7,1,4,1,8,1,4,3,7,1,4,4,6,1,4,5,1,1,4,7,9,1,5,0,1,1,5,1,4,1,5,5,9,1,5,7,6,1,6,0,7,1,6,1,9,1,6,4,1,1,6,8,4,1,7,0,5,1,7,2,1,1,7,3,4,1,7,6,7,1,7,8,8,1,8,2,3,1,8,4,5,1,8,5,7,1,8,6,9,1};
+	    	System.out.println("join");
+			int[] sudoku = {0,2,4,1,0,3,6,1,0,4,7,1,0,6,5,1,1,0,8,1,1,2,6,1,1,3,9,1,1,6,3,1,1,8,2,1,2,0,9,1,2,1,7,1,2,5,3,1,2,8,6,1,3,1,5,1,3,3,2,1,3,6,1,1,3,7,8,1,3,8,7,1,4,1,8,1,4,3,7,1,4,4,6,1,4,5,1,1,4,7,9,1,5,0,1,1,5,1,4,1,5,5,9,1,5,7,6,1,6,0,7,1,6,1,9,1,6,4,1,1,6,8,4,1,7,0,5,1,7,2,1,1,7,3,4,1,7,6,7,1,7,8,8,1,8,2,3,1,8,4,5,1,8,5,7,1,8,6,9,1};
 			network.writeJoinAck(9, sudoku);
 		}
 		boardPanel.repaint();
