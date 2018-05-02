@@ -69,6 +69,7 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 			
 			JFrame networkPanel = networkPanel(socket);
 			networkPanel.setVisible(true);
+			
 			System.out.println(InetAddress.getLocalHost().getHostAddress());
 			new Thread(() -> { 
 				try {
