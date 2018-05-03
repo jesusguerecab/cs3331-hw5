@@ -224,7 +224,7 @@ public class SudokuDialog extends JFrame {
 	}
 
 	/** Ask user for new board size and initializes it */
-	private void requestNewBoard() {
+	protected void requestNewBoard() {
 		String[] options = new String[] {"4x4", "9x9","Cancel"};
 		int response = JOptionPane.showOptionDialog(null, "Quit the current game?\nSelect the board size.", "New Game",
 				JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,

@@ -21,6 +21,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
@@ -216,8 +217,12 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 			boardPanel.repaint();
 			break;
 		case NEW:
-			board = new Board(x,others);
-			//boardPanel.setBoard(board);
+			int response = JOptionPane.showOptionDialog(null, "Quit the current game?\nSelect the board size.", "New Game",
+					JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
+					null, null, null);
+			network.writeNewAck(response==1?true:false);
+			break;
+		case NEW_ACK:
 			break;
 		case JOIN:
 			network.writeJoinAck(board.size, board.getJoinArray());
@@ -227,6 +232,11 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 	
 	protected void numberClicked(int number) {
 		super.numberClicked(number);
-		network.writeFill(board.getX(),board.getY(),number);
+		network.writeFill(board.getX(), board.getY(),number);
+	}
+	
+	protected void requestNewBoard() {
+		super.requestNewBoard();
+		network.writeNew(board.size, board.getJoinArray());
 	}
 }
