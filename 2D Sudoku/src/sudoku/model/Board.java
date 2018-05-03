@@ -1,5 +1,7 @@
 package sudoku.model;
 
+import java.util.ArrayList;
+
 /** An abstraction of Sudoku puzzle. */
 public class Board {
 
@@ -70,6 +72,23 @@ public class Board {
 	/**  Return the array of this board. */
 	public int[][] getArray() {
 		return sudoku;
+	}
+	
+	public int[] getJoinArray() {
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		for(x = 0;x < size;x++)
+			for(y = 0;y < size;y++) {
+				if(sudoku[x][y] != 0) {
+					list.add(x);
+					list.add(y);
+					list.add(sudoku[x][y]);
+					list.add(preFilled[x][y]?1:0);
+				}
+			}
+		int[] arr = new int[list.size()];
+		for(int i = 0;i < list.size();i++)
+			arr[i] = list.get(i);
+		return arr;
 	}
 
 	/** Creates and returns a copy of the sudoku array. */
