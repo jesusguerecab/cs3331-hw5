@@ -40,7 +40,9 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 	JTextArea consolePanel;
 	ServerSocket server;
 	Socket socket;
-
+	Socket client;
+	Boolean panelOpen = false;
+	
 	public HW5Main() {
 		super();
 	}	
@@ -64,23 +66,27 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 	}
 
 	private void networkButtonClicked(ActionEvent e) { 
-		try {
-			socket = new Socket();
-			server = new ServerSocket(0);
-
-			JFrame networkPanel = networkPanel(socket);
-			networkPanel.setVisible(true);
-
-			System.out.println(InetAddress.getLocalHost().getHostAddress());
-			new Thread(() -> { 
-				try {
-					Socket client = server.accept();
-					pairAsServer(client);
-				} catch(Exception a) { }
-			}).start();
-		} catch (Exception e1) {
-
-		}
+		if(panelOpen != true)
+			try {
+				if(socket == null)
+					socket = new Socket();
+				if(server == null)
+					server = new ServerSocket(0);
+				JFrame networkPanel = networkPanel(socket);
+				networkPanel.setVisible(true);
+	
+				System.out.println(InetAddress.getLocalHost().getHostAddress());
+				new Thread(() -> { 
+					try {
+						while(true) {
+							client = server.accept();
+							pairAsServer(client);
+						}
+					} catch(Exception a) { }
+				}).start();
+			} catch (Exception e1) {
+	
+			}
 	}
 
 	private JFrame networkPanel(Socket socket) throws UnknownHostException {
@@ -142,7 +148,8 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 			public void actionPerformed(ActionEvent e) { 
 				network.close();
 				try {
-					socket.close();
+					network.writeQuit();
+					client.close();
 				} catch (IOException e1) {
 
 				}
@@ -226,12 +233,27 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 				board = new Board(1,x,others);
 				boardPanel.setBoard(board);
 				boardPanel.repaint();
+			} else {
+				network.writeQuit();
+				try {
+					socket.close();
+				} catch (IOException e) {
+				}
+				try {
+					client.close();
+				} catch (IOException e) {
+				}
 			}
 			break;
 		case NEW_ACK:
 			break;
 		case JOIN:
 			network.writeJoinAck(board.size, board.getJoinArray());
+		case QUIT:
+			try {
+				socket.close();
+			} catch (IOException e) {
+			}
 		}
 		boardPanel.repaint();
 	}
