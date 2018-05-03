@@ -189,8 +189,6 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 	private void pairAsServer(Socket client) {
 		network = new NetworkAdapter(client);
 		network.setMessageListener(this); 
-		int[] sudoku = {1,9,0,2,4,1,0,3,6,1,0,4,7,1,0,6,5,1,1,0,8,1,1,2,6,1,1,3,9,1,1,6,3,1,1,8,2,1,2,0,9,1,2,1,7,1,2,5,3,1,2,8,6,1,3,1,5,1,3,3,2,1,3,6,1,1,3,7,8,1,3,8,7,1,4,1,8,1,4,3,7,1,4,4,6,1,4,5,1,1,4,7,9,1,5,0,1,1,5,1,4,1,5,5,9,1,5,7,6,1,6,0,7,1,6,1,9,1,6,4,1,1,6,8,4,1,7,0,5,1,7,2,1,1,7,3,4,1,7,6,7,1,7,8,8,1,8,2,3,1,8,4,5,1,8,5,7,1,8,6,9,1};
-		network.writeJoinAck(9, sudoku);
 		network.receiveMessages();
 	}
 
@@ -205,7 +203,7 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 	public void messageReceived(MessageType type, int x, int y, int z, int[] others) {
 		System.out.println(type.toString());
 		switch (type) {
-		case FILL:
+		case FILL_ACK:
 			// peer filled the square (x, y) with the number z
 			board.insert(x, y, z);
 			break;
@@ -221,6 +219,8 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 			//boardPanel.setBoard(board);
 			break;
 		case JOIN:
+			int[] sudoku = {1,9,0,2,4,1,0,3,6,1,0,4,7,1,0,6,5,1,1,0,8,1,1,2,6,1,1,3,9,1,1,6,3,1,1,8,2,1,2,0,9,1,2,1,7,1,2,5,3,1,2,8,6,1,3,1,5,1,3,3,2,1,3,6,1,1,3,7,8,1,3,8,7,1,4,1,8,1,4,3,7,1,4,4,6,1,4,5,1,1,4,7,9,1,5,0,1,1,5,1,4,1,5,5,9,1,5,7,6,1,6,0,7,1,6,1,9,1,6,4,1,1,6,8,4,1,7,0,5,1,7,2,1,1,7,3,4,1,7,6,7,1,7,8,8,1,8,2,3,1,8,4,5,1,8,5,7,1,8,6,9,1};
+			network.writeJoinAck(9, sudoku);
 		}
 		boardPanel.repaint();
 	}
