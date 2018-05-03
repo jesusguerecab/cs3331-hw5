@@ -246,7 +246,20 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 		case NEW_ACK:
 			break;
 		case JOIN:
-			network.writeJoinAck(board.size, board.getJoinArray());
+			response = JOptionPane.showOptionDialog(null, "Accept connection?", "New connection",
+					JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
+					null, null, null);
+			network.writeNewAck(response==1?false:true);
+
+			if(response != 1) {
+				network.writeJoinAck(board.size, board.getJoinArray());
+			} else {
+				network.writeQuit();
+				try {
+					socket.close();
+				} catch (IOException e) {
+				}
+			}
 		case QUIT:
 			try {
 				socket.close();
