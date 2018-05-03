@@ -66,15 +66,12 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 	}
 
 	private void networkButtonClicked(ActionEvent e) { 
-		if(panelOpen != true)
 			try {
 				if(socket == null)
 					socket = new Socket();
 				if(server == null)
 					server = new ServerSocket(0);
-				JFrame networkPanel = networkPanel(socket);
-				networkPanel.setVisible(true);
-	
+				networkPanel(socket);
 				System.out.println(InetAddress.getLocalHost().getHostAddress());
 				new Thread(() -> { 
 					try {
@@ -89,7 +86,7 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 			}
 	}
 
-	private JFrame networkPanel(Socket socket) throws UnknownHostException {
+	private void networkPanel(Socket socket) throws UnknownHostException {
 		JFrame frame = new JFrame("Network");
 
 		JPanel panel = new JPanel(new GridLayout(4,1));
@@ -149,7 +146,7 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 				network.close();
 				try {
 					network.writeQuit();
-					client.close();
+					socket.close();
 				} catch (IOException e1) {
 
 				}
@@ -174,7 +171,8 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 		panel.add(botPanel);
 		//panel.add(close);
 
-		return frame;
+		JOptionPane.showOptionDialog(frame, panel, "Connection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
+		
 	}
 
 	private JTextArea newTxtField(String str) {
