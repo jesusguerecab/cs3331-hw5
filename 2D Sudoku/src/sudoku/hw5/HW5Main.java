@@ -39,11 +39,11 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 	JTextArea consolePanel;
 	ServerSocket server;
 	Socket socket;
-
+	
 	public HW5Main() {
 		super();
-	}
-
+	}	
+	
 	public static void main(String[] args) {
 		new HW5Main();
 	}
@@ -199,9 +199,7 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 	protected void fillNumber(int x, int y, int n) {
 		board.insert(x,y,n);
 		if (network != null) { network.writeFill(x, y, n); } 
-	}	
-
-	public void 
+	}
 	
 	/** Called when a message is received from the peer. */
 	public void messageReceived(MessageType type, int x, int y, int z, int[] others) {
@@ -225,5 +223,10 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 		case JOIN:
 		}
 		boardPanel.repaint();
+	}
+	
+	protected void numberClicked(int number) {
+		super.numberClicked(number);
+		network.writeFill(board.getX(),board.getY(),number);
 	}
 }

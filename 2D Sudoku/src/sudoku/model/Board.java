@@ -274,8 +274,9 @@ public class Board {
 				return false;
 		return true;
 	}
-
+	
 	/** Getters and Setters*/ 
+	
 	public void setX(int x) {
 		this.x = x;
 	}
