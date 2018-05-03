@@ -249,13 +249,14 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 				board = new Board(1,x,others);
 				boardPanel.setBoard(board);
 				boardPanel.repaint();
+				network.writeNewAck(true);
+				printToNetworkConsole(false,MessageType.NEW_ACK);
 			} else {
 				network.writeQuit();
 				printToNetworkConsole(false,MessageType.QUIT);
 				try {
 					socket.close();
-				} catch (IOException e) {
-				}
+				} catch (IOException e) { }
 				try {
 					client.close();
 				} catch (IOException e) {
