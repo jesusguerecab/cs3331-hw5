@@ -282,4 +282,11 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 		current += "\n" + str;
 		consolePanel.setText(current);
 	}
+	
+	private String arrayToString(int[] arr) {
+		String result = "";
+		for(int i:arr)
+			result += i + ",";
+		return result;
+	}
 }
