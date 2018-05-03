@@ -203,9 +203,10 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 	public void messageReceived(MessageType type, int x, int y, int z, int[] others) {
 		System.out.println(type.toString());
 		switch (type) {
-		case FILL_ACK:
+		case FILL:
 			// peer filled the square (x, y) with the number z
 			board.insert(x, y, z);
+			network.writeFillAck(x, y, z);
 			break;
 		case JOIN_ACK:
 			if(x==1) {
