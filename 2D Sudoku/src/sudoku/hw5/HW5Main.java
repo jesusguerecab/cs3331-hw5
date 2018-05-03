@@ -9,7 +9,6 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -281,5 +280,6 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 	protected void printToNetworkConsole(String str) {
 		String current = consolePanel.getText();
 		current += "\n" + str;
+		consolePanel.setText(current);
 	}
 }
