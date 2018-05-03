@@ -40,11 +40,11 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 	JTextArea consolePanel;
 	ServerSocket server;
 	Socket socket;
-	
+
 	public HW5Main() {
 		super();
 	}	
-	
+
 	public static void main(String[] args) {
 		new HW5Main();
 	}
@@ -67,19 +67,19 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 		try {
 			socket = new Socket();
 			server = new ServerSocket(0);
-			
+
 			JFrame networkPanel = networkPanel(socket);
 			networkPanel.setVisible(true);
-			
+
 			System.out.println(InetAddress.getLocalHost().getHostAddress());
 			new Thread(() -> { 
 				try {
 					Socket client = server.accept();
 					pairAsServer(client);
 				} catch(Exception a) { }
-				}).start();
+			}).start();
 		} catch (Exception e1) {
-			
+
 		}
 	}
 
@@ -88,28 +88,28 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 
 		JPanel panel = new JPanel(new GridLayout(4,1));
 		panel.setPreferredSize(new Dimension(300, 400));
-		
-        final JPanel playerPanel = new JPanel(new GridLayout(3,2));
-        playerPanel.setBorder(new TitledBorder("Player"));
-        
-        String[] hostInfo = InetAddress.getLocalHost().toString().split("/");
-        playerPanel.add(new JLabel("Host name:"));
-        playerPanel.add(newTxtField(hostInfo[0]));
-        playerPanel.add(new JLabel("IP number:"));
-        playerPanel.add(newTxtField(hostInfo[1]));
-        playerPanel.add(new JLabel("Port number:"));
-        playerPanel.add(newTxtField(Integer.toString(server.getLocalPort())));
-        panel.add(playerPanel);
-        
-        //Display
-        String[] options = new String[] {"Cancel"};
-        frame.add(panel);
-        frame.setSize(300, 400);
-        
+
+		final JPanel playerPanel = new JPanel(new GridLayout(3,2));
+		playerPanel.setBorder(new TitledBorder("Player"));
+
+		String[] hostInfo = InetAddress.getLocalHost().toString().split("/");
+		playerPanel.add(new JLabel("Host name:"));
+		playerPanel.add(newTxtField(hostInfo[0]));
+		playerPanel.add(new JLabel("IP number:"));
+		playerPanel.add(newTxtField(hostInfo[1]));
+		playerPanel.add(new JLabel("Port number:"));
+		playerPanel.add(newTxtField(Integer.toString(server.getLocalPort())));
+		panel.add(playerPanel);
+
+		//Display
+		String[] options = new String[] {"Cancel"};
+		frame.add(panel);
+		frame.setSize(300, 400);
+
 		//Peer sub-panel
 		JPanel peerPanel = new JPanel(new GridLayout(3,2));
 		peerPanel.setBorder(new TitledBorder("Peer"));
-		
+
 		//Bottom Panel
 		JPanel botPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -158,15 +158,15 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 		} );
 		panel.add(peerPanel);
 		panel.add(consolePanel);
-		
-		
+
+
 		c.fill = GridBagConstraints.LAST_LINE_END;
 		c.gridx = 5;
 		c.gridy = 2;
 		botPanel.add(close, c);
 		panel.add(botPanel);
 		//panel.add(close);
-		
+
 		return frame;
 	}
 
@@ -179,7 +179,7 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 			txtField.setEditable(false);
 		return txtField;
 	}
-	
+
 	private void pairAsClient(Socket socket) {
 		network = new NetworkAdapter(socket);
 		network.setMessageListener(this); // see the next slide
@@ -199,7 +199,7 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 		board.insert(x,y,n);
 		if (network != null) { network.writeFill(x, y, n); } 
 	}
-	
+
 	/** Called when a message is received from the peer. */
 	public void messageReceived(MessageType type, int x, int y, int z, int[] others) {
 		System.out.println(type.toString());
@@ -217,10 +217,16 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 			boardPanel.repaint();
 			break;
 		case NEW:
-			int response = JOptionPane.showOptionDialog(null, "Quit the current game?\nSelect the board size.", "New Game",
+			int response = JOptionPane.showOptionDialog(null, "Accept new game?", "New Game",
 					JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
 					null, null, null);
-			network.writeNewAck(response==1?true:false);
+			network.writeNewAck(response==1?false:true);
+
+			if(response != 1) {
+				board = new Board(1,x,others);
+				boardPanel.setBoard(board);
+				boardPanel.repaint();
+			}
 			break;
 		case NEW_ACK:
 			break;
@@ -229,12 +235,12 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 		}
 		boardPanel.repaint();
 	}
-	
+
 	protected void numberClicked(int number) {
 		super.numberClicked(number);
 		network.writeFill(board.getX(), board.getY(),number);
 	}
-	
+
 	protected void requestNewBoard() {
 		super.requestNewBoard();
 		network.writeNew(board.size, board.getJoinArray());
