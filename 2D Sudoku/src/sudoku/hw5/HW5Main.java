@@ -42,6 +42,7 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 	Socket socket;
 	Socket client;
 	Boolean panelOpen = false;
+	JFrame networkFrame;
 	
 	public HW5Main() {
 		super();
@@ -66,12 +67,14 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 	}
 
 	private void networkButtonClicked(ActionEvent e) { 
+		if(networkFrame == null || !networkFrame.isVisible())
 			try {
 				if(socket == null)
 					socket = new Socket();
 				if(server == null)
 					server = new ServerSocket(0);
-				networkPanel(socket);
+				networkFrame = networkPanel(socket);
+				networkFrame.setVisible(true);
 				System.out.println(InetAddress.getLocalHost().getHostAddress());
 				new Thread(() -> { 
 					try {
@@ -86,7 +89,7 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 			}
 	}
 
-	private void networkPanel(Socket socket) throws UnknownHostException {
+	private JFrame networkPanel(Socket socket) throws UnknownHostException {
 		JFrame frame = new JFrame("Network");
 
 		JPanel panel = new JPanel(new GridLayout(4,1));
@@ -169,10 +172,7 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 		c.gridy = 2;
 		botPanel.add(close, c);
 		panel.add(botPanel);
-		//panel.add(close);
-
-		JOptionPane.showOptionDialog(frame, panel, "Connection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
-		
+		return frame;
 	}
 
 	private JTextArea newTxtField(String str) {
@@ -207,6 +207,7 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 
 	/** Called when a message is received from the peer. */
 	public void messageReceived(MessageType type, int x, int y, int z, int[] others) {
+		printToNetworkConsole(type.toString() + x + y + z);
 		System.out.println(type.toString());
 		switch (type) {
 		case FILL:
@@ -225,7 +226,6 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 			int response = JOptionPane.showOptionDialog(null, "Accept new game?", "New Game",
 					JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
 					null, null, null);
-			network.writeNewAck(response==1?false:true);
 
 			if(response != 1) {
 				board = new Board(1,x,others);
@@ -249,7 +249,6 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 			response = JOptionPane.showOptionDialog(null, "Accept connection?", "New connection",
 					JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
 					null, null, null);
-			network.writeNewAck(response==1?false:true);
 
 			if(response != 1) {
 				network.writeJoinAck(board.size, board.getJoinArray());
@@ -277,5 +276,10 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 	protected void requestNewBoard() {
 		super.requestNewBoard();
 		network.writeNew(board.size, board.getJoinArray());
+	}
+	
+	protected void printToNetworkConsole(String str) {
+		String current = consolePanel.getText();
+		current += "\n" + str;
 	}
 }
