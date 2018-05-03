@@ -22,9 +22,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import sudoku.dialog.SudokuDialog;
@@ -130,7 +133,15 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 		peerPanel.add(peerPortNumber);
 		JButton connect = new JButton("Connect");
 		JButton disconnect = new JButton("Disconnect");
-		consolePanel = newTxtField(" ");
+		
+		//Console
+		consolePanel = new JTextArea(16, 58);
+        consolePanel.setEditable(false); // set textArea non-editable
+	    JScrollPane console = new JScrollPane(consolePanel);
+	    console.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+	    //console.add(scroll);
+	    
+	    
 		JButton close = new JButton("Close");
 
 		connect.addActionListener(new ActionListener() { 
@@ -148,6 +159,7 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 				network.close();
 				try {
 					network.writeQuit();
+					printToNetworkConsole(false,MessageType.QUIT);
 					socket.close();
 				} catch (IOException e1) {
 
@@ -163,7 +175,7 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 			} 
 		} );
 		panel.add(peerPanel);
-		panel.add(consolePanel);
+		panel.add(console);
 
 
 		c.fill = GridBagConstraints.LAST_LINE_END;
@@ -188,6 +200,7 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 		network = new NetworkAdapter(socket);
 		network.setMessageListener(this); // see the next slide
 		network.writeJoin();
+		printToNetworkConsole(false,MessageType.JOIN);
 		network.receiveMessages(); // loop till disconnected
 	}
 
@@ -201,20 +214,25 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 
 	protected void fillNumber(int x, int y, int n) {
 		board.insert(x,y,n);
-		if (network != null) { network.writeFill(x, y, n); } 
+		if (network != null) { 
+			network.writeFill(x, y, n); 
+			printToNetworkConsole(false,MessageType.FILL,x,y,n);
+		} 
 	}
 
 	/** Called when a message is received from the peer. */
 	public void messageReceived(MessageType type, int x, int y, int z, int[] others) {
-		printToNetworkConsole(type.toString() + x + y + z);
 		System.out.println(type.toString());
 		switch (type) {
 		case FILL:
+			printToNetworkConsole(true,type,x,y,z);
 			// peer filled the square (x, y) with the number z
 			board.insert(x, y, z);
 			network.writeFillAck(x, y, z);
+			printToNetworkConsole(false,MessageType.FILL_ACK,x,y,z);
 			break;
 		case JOIN_ACK:
+			printToNetworkConsole(true,type,x,others);
 			if(x==1) {
 				board = new Board(x,y,others);
 				boardPanel.setBoard(board);
@@ -222,6 +240,7 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 			boardPanel.repaint();
 			break;
 		case NEW:
+			printToNetworkConsole(true,type,x,others);
 			int response = JOptionPane.showOptionDialog(null, "Accept new game?", "New Game",
 					JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
 					null, null, null);
@@ -232,6 +251,7 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 				boardPanel.repaint();
 			} else {
 				network.writeQuit();
+				printToNetworkConsole(false,MessageType.QUIT);
 				try {
 					socket.close();
 				} catch (IOException e) {
@@ -243,26 +263,32 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 			}
 			break;
 		case NEW_ACK:
+			printToNetworkConsole(true,type,x);
+			break;
+		case FILL_ACK:
+			printToNetworkConsole(true,type,x,y,z);
 			break;
 		case JOIN:
+			printToNetworkConsole(true,type);
 			response = JOptionPane.showOptionDialog(null, "Accept connection?", "New connection",
 					JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
 					null, null, null);
 
 			if(response != 1) {
 				network.writeJoinAck(board.size, board.getJoinArray());
+				printToNetworkConsole(false,MessageType.JOIN_ACK,board.size, board.getJoinArray());
 			} else {
 				network.writeQuit();
+				printToNetworkConsole(false,MessageType.QUIT);
 				try {
 					socket.close();
-				} catch (IOException e) {
-				}
+				} catch (IOException e) { }
 			}
 		case QUIT:
+			printToNetworkConsole(true,type);
 			try {
 				socket.close();
-			} catch (IOException e) {
-			}
+			} catch (IOException e) { }
 		}
 		boardPanel.repaint();
 	}
@@ -270,16 +296,43 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 	protected void numberClicked(int number) {
 		super.numberClicked(number);
 		network.writeFill(board.getX(), board.getY(),number);
+		printToNetworkConsole(false,MessageType.FILL,board.getX(),board.getY(),number);
 	}
 
 	protected void requestNewBoard() {
 		super.requestNewBoard();
 		network.writeNew(board.size, board.getJoinArray());
+		printToNetworkConsole(false,MessageType.NEW,board.size, board.getJoinArray());
 	}
 	
-	protected void printToNetworkConsole(String str) {
+    private void printToNetworkConsole(boolean IO,MessageType type) {
+    	printToNetworkConsole(IO, type.toString());
+    }
+    
+    private void printToNetworkConsole(boolean IO, MessageType type, int x) {
+    	printToNetworkConsole(IO, type.toString()+":"+x);
+    }
+    
+    private void printToNetworkConsole(boolean IO, MessageType type, int x, int[] others) {
+    	printToNetworkConsole(IO, type.toString()+":"+ x + "," + arrayToString(others));
+    }
+    
+    private void printToNetworkConsole(boolean IO, MessageType type, int x, int y, int v) {
+    	printToNetworkConsole(IO, type.toString()+":"+ x + "," + y + "," + v);
+    }
+    
+    private void printToNetworkConsole(boolean IO, MessageType type, int x, int y, int[] others) {
+    	printToNetworkConsole(IO, type.toString()+":"+ x + "," + y + "," + arrayToString(others));
+    }
+    
+    /**
+     * 
+     * @param IO true if input false if output
+     * @param str
+     */
+	protected void printToNetworkConsole(boolean IO, String str) {
 		String current = consolePanel.getText();
-		current += "\n" + str;
+		current += "\n" + (IO?"<":">") + str;
 		consolePanel.setText(current);
 	}
 	
