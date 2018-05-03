@@ -37,6 +37,7 @@ import sudoku.model.Board;
 
 public class HW5Main extends SudokuDialog implements MessageListener{
 
+	/** Components */
 	JTextArea peerHostName;
 	JTextArea peerPortNumber;
 	JTextArea consolePanel;
@@ -46,6 +47,7 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 	Boolean panelOpen = false;
 	JFrame networkFrame;
 	
+	/** Constructor */
 	public HW5Main() {
 		super();
 	}	
@@ -54,12 +56,20 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 		new HW5Main();
 	}
 
+	/** Components Properties */
 	private ImageIcon NETWORK_OFF, NETWORK_ON;
 	private JButton networkButton;
+	
+	private NetworkAdapter network;
 
+	/**
+	 *  Adds the new button to the existing toolbar.
+	 *  
+	 *  @return JToolBar New toolbar with new button added.
+	 */
 	protected JToolBar initToolBar() {
 		JToolBar toolBar = super.initToolBar();
-		NETWORK_OFF = createImageIcon("wifi-red.png");
+		NETWORK_OFF = createImageIcon("wifi-blue.png");
 		networkButton = new JButton(NETWORK_OFF);
 		networkButton.addActionListener(this::networkButtonClicked);
 		networkButton.setToolTipText("Pair");
@@ -68,6 +78,7 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 		return toolBar;
 	}
 
+	/** 	Called when new button is clicked, will open network panel.*/
 	private void networkButtonClicked(ActionEvent e) { 
 		if(networkFrame == null || !networkFrame.isVisible())
 			try {
@@ -91,6 +102,13 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 			}
 	}
 
+	/**
+	 * Creates the network panel.
+	 * 
+	 * @param socket current socket.
+	 * @return JFrame network panel
+	 * @throws UnknownHostException
+	 */
 	private JFrame networkPanel(Socket socket) throws UnknownHostException {
 		JFrame frame = new JFrame("Network");
 
@@ -186,6 +204,12 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 		return frame;
 	}
 
+	/**
+	 * Creates and returns a JTextArea depending on the string given will be editable or not.
+	 * 
+	 * @param str If null, component cant' be editable otherwise will be editable.
+	 * @return JTextArea component.
+	 */
 	private JTextArea newTxtField(String str) {
 		JTextArea txtField = new JTextArea(1,10);
 		txtField.setBorder(BorderFactory.createLineBorder(Color.gray));
@@ -196,6 +220,7 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 		return txtField;
 	}
 
+	/** Will pair player as a client.*/
 	private void pairAsClient(Socket socket) {
 		network = new NetworkAdapter(socket);
 		network.setMessageListener(this); // see the next slide
@@ -204,14 +229,20 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 		network.receiveMessages(); // loop till disconnected
 	}
 
+	/** Will pair player as a server.*/
 	private void pairAsServer(Socket client) {
 		network = new NetworkAdapter(client);
 		network.setMessageListener(this); 
 		network.receiveMessages();
 	}
 
-	private NetworkAdapter network;
-
+	/**
+	 *  Will insert a value on the board depending on the parameters.
+	 * 
+	 * @param x row on the board, position.
+	 * @param y col on the board, position
+	 * @param n value on the board.
+	 */
 	protected void fillNumber(int x, int y, int n) {
 		board.insert(x,y,n);
 		if (network != null) { 
@@ -294,18 +325,21 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 		boardPanel.repaint();
 	}
 
+	/** Records the number/button clicked by the users.*/
 	protected void numberClicked(int number) {
 		super.numberClicked(number);
 		network.writeFill(board.getX(), board.getY(),number);
 		printToNetworkConsole(false,MessageType.FILL,board.getX(),board.getY(),number);
 	}
 
+	/** Called when new game is requested and players are connected.*/
 	protected void requestNewBoard() {
 		super.requestNewBoard();
 		network.writeNew(board.size, board.getJoinArray());
 		printToNetworkConsole(false,MessageType.NEW,board.size, board.getJoinArray());
 	}
 	
+	/** Prints messages to the network console.*/
     private void printToNetworkConsole(boolean IO,MessageType type) {
     	printToNetworkConsole(IO, type.toString());
     }
@@ -322,12 +356,7 @@ public class HW5Main extends SudokuDialog implements MessageListener{
     	printToNetworkConsole(IO, type.toString()+":"+ x + "," + y + "," + v);
     }
     
-    private void printToNetworkConsole(boolean IO, MessageType type, int x, int y, int[] others) {
-    	printToNetworkConsole(IO, type.toString()+":"+ x + "," + y + "," + arrayToString(others));
-    }
-    
     /**
-     * 
      * @param IO true if input false if output
      * @param str
      */
@@ -337,6 +366,12 @@ public class HW5Main extends SudokuDialog implements MessageListener{
 		consolePanel.setText(current);
 	}
 	
+	/**
+	 * Converts an array to string.
+	 * 
+	 * @param arr array to be converted.
+	 * @return String the array converted in string.
+	 */
 	private String arrayToString(int[] arr) {
 		String result = "";
 		for(int i:arr)
